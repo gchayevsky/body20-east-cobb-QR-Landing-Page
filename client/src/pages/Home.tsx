@@ -1,15 +1,16 @@
 /*
  * BODY20 East Cobb — QR Landing Page — Home
  * Design: Corporate Athletic Minimalism
- * Colors: Black #000, Red #E31837, White #FFF
+ * Colors: Deep navy bg, Cyan #00D4FF accent, White text — matches lead magnet site
  * Fonts: Barlow Condensed (headlines), Barlow (body)
- * NO blue. NO neon. NO rounded buttons. NO SaaS vibes.
  */
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Header from "@/components/Header";
 import OrbSection from "@/components/OrbSection";
 import ChatPanel from "@/components/ChatPanel";
+import GoogleReviewStrip from "@/components/GoogleReviewStrip";
+import MemberTestimonials from "@/components/MemberTestimonials";
 import BookingSection from "@/components/BookingSection";
 import LongevitySection from "@/components/LongevitySection";
 import StickyBookingBar from "@/components/StickyBookingBar";
@@ -31,7 +32,10 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+    <div
+      className="min-h-screen text-white overflow-x-hidden"
+      style={{ backgroundColor: "oklch(0.15 0.02 250)" }}
+    >
       <Header />
 
       {/* Hero / Orb Section */}
@@ -50,6 +54,12 @@ export default function Home() {
           setTimeout(scrollToBooking, 300);
         }}
       />
+
+      {/* Google Review Strip — between hero and booking */}
+      <GoogleReviewStrip />
+
+      {/* Member Testimonial Videos */}
+      <MemberTestimonials />
 
       {/* Booking Section */}
       <div ref={bookingRef}>

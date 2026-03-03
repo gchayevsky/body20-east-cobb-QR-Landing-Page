@@ -1,13 +1,15 @@
 /*
  * OrbSection — BODY20 East Cobb QR Landing Page
- * Hero section with animated orb, headline, and orb controls
+ * Hero section with animated orb, headline, and redesigned pill-chip controls
  * Palette: deep navy bg, cyan #00D4FF accent, white text — matches lead magnet site
+ * Orb auto-starts (no "Tap to Begin"). Pause/Resume toggles on same button.
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Pause, Play, MessageSquare, CalendarCheck, PhoneCall } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
-const ORB_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-orb-visual-ZD8tb9cdMYYZEmTyDPNhNL.webp";
+const ORB_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-orb-cyan-ZkyKqZC3uPGiX8CoHPnEQk.webp";
 
 interface OrbSectionProps {
   onOrbTap: () => void;
@@ -17,6 +19,13 @@ interface OrbSectionProps {
 
 export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }: OrbSectionProps) {
   const [orbPaused, setOrbPaused] = useState(false);
+  const [visible, setVisible] = useState(false);
+
+  // Trigger entrance animations after mount
+  useEffect(() => {
+    const t = setTimeout(() => setVisible(true), 80);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <section
@@ -28,33 +37,36 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url(${HERO_BG})`,
-          filter: "brightness(0.15) saturate(0.5)",
+          filter: "brightness(0.12) saturate(0.4)",
         }}
       />
       {/* Gradient overlay — navy at bottom */}
       <div
         className="absolute inset-0"
         style={{
-          background: "linear-gradient(to bottom, oklch(0.15 0.02 250 / 0.6) 0%, transparent 40%, oklch(0.15 0.02 250) 100%)",
+          background: "linear-gradient(to bottom, oklch(0.15 0.02 250 / 0.5) 0%, transparent 40%, oklch(0.15 0.02 250) 100%)",
         }}
       />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-2xl mx-auto">
         {/* Section label — cyan */}
-        <p className="b20-label mb-6 animate-fade-in-up" style={{ animationDelay: "0.1s", opacity: 0, animationFillMode: "forwards" }}>
+        <p
+          className="b20-label mb-6 transition-all duration-700"
+          style={{ opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(16px)" }}
+        >
           BODY20 East Cobb
         </p>
 
         {/* Headline */}
         <h1
-          className="font-['Barlow_Condensed'] font-extrabold text-white uppercase leading-none mb-4 animate-fade-in-up"
+          className="font-['Barlow_Condensed'] font-extrabold text-white uppercase leading-none mb-4 transition-all duration-700"
           style={{
             fontSize: "clamp(3rem, 10vw, 5.5rem)",
             letterSpacing: "-0.01em",
-            animationDelay: "0.2s",
-            opacity: 0,
-            animationFillMode: "forwards",
+            transitionDelay: "0.1s",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(16px)",
           }}
         >
           Stronger. Fitter.<br />
@@ -63,111 +75,145 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
 
         {/* Subheadline */}
         <p
-          className="text-white/70 font-['Barlow'] font-300 text-lg leading-relaxed mb-12 max-w-lg animate-fade-in-up"
-          style={{ animationDelay: "0.35s", opacity: 0, animationFillMode: "forwards" }}
+          className="text-white/70 font-['Barlow'] text-lg leading-relaxed mb-10 max-w-lg transition-all duration-700"
+          style={{
+            transitionDelay: "0.2s",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(16px)",
+          }}
         >
           Personalized neuromuscular training and health optimization — right here in East Cobb.
         </p>
 
         {/* Cyan divider */}
         <div
-          className="w-16 mb-12 animate-fade-in-up"
+          className="w-16 mb-10 transition-all duration-700"
           style={{
             height: "1px",
-            backgroundColor: "rgba(0, 212, 255, 0.5)",
-            animationDelay: "0.4s",
-            opacity: 0,
-            animationFillMode: "forwards",
+            backgroundColor: "rgba(0, 212, 255, 0.4)",
+            transitionDelay: "0.25s",
+            opacity: visible ? 1 : 0,
           }}
         />
 
-        {/* ORB */}
+        {/* ORB — auto-starts, click opens chat */}
         <div
-          className="relative cursor-pointer group animate-fade-in-up"
-          style={{ animationDelay: "0.5s", opacity: 0, animationFillMode: "forwards" }}
+          className="relative cursor-pointer group transition-all duration-700"
+          style={{
+            transitionDelay: "0.3s",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+          }}
           onClick={onOrbTap}
           role="button"
-          aria-label="Tap to begin"
+          aria-label="Open Jen AI chat"
         >
-          {/* Outer pulse ring — cyan */}
+          {/* Outer ambient glow — cyan, pulses when active */}
           <div
-            className="absolute inset-0 rounded-full"
+            className="absolute rounded-full pointer-events-none"
             style={{
-              animation: orbPaused ? "none" : "orb-pulse 3s ease-in-out infinite",
+              inset: "-20px",
+              background: "radial-gradient(circle, rgba(0,212,255,0.18) 0%, transparent 70%)",
+              animation: orbPaused ? "none" : "orb-glow-pulse 3s ease-in-out infinite",
               borderRadius: "50%",
             }}
           />
           {/* Orb image */}
           <div
-            className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-105"
+            className="relative w-52 h-52 md:w-60 md:h-60 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-105"
             style={{
               animation: orbPaused ? "none" : "orb-ring-pulse 3s ease-in-out infinite",
+              filter: "drop-shadow(0 0 24px rgba(0,212,255,0.35))",
             }}
           >
             <img
               src={ORB_IMG}
-              alt="BODY20 Orb"
+              alt="BODY20 AI Orb — tap to chat with Jen"
               className="w-full h-full object-cover"
               draggable={false}
             />
           </div>
         </div>
 
-        {/* TAP TO BEGIN label */}
+        {/* Auto-start label — replaces "Tap to Begin" */}
         <p
-          className="mt-4 text-white/50 text-xs font-['Barlow'] font-500 tracking-widest uppercase animate-fade-in-up"
-          style={{ animationDelay: "0.65s", opacity: 0, animationFillMode: "forwards" }}
+          className="mt-3 text-white/45 text-xs font-['Barlow'] tracking-widest uppercase transition-all duration-700"
+          style={{
+            transitionDelay: "0.4s",
+            opacity: visible ? 0.45 : 0,
+          }}
         >
-          Tap to Begin
+          Tap orb to chat with Jen
         </p>
 
-        {/* Orb micro-controls */}
+        {/* ── Redesigned pill-chip orb controls ── */}
         <div
-          className="flex items-center gap-6 mt-6 animate-fade-in-up"
-          style={{ animationDelay: "0.75s", opacity: 0, animationFillMode: "forwards" }}
+          className="flex flex-wrap items-center justify-center gap-3 mt-7 transition-all duration-700"
+          style={{
+            transitionDelay: "0.5s",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(12px)",
+          }}
         >
+          {/* Pause / Resume */}
           <button
             onClick={(e) => { e.stopPropagation(); setOrbPaused(!orbPaused); }}
-            className="text-white/40 text-xs font-['Barlow'] font-500 tracking-wide uppercase hover:text-white/70 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "rgba(0,212,255,0.08)",
+              border: "1px solid rgba(0,212,255,0.3)",
+              color: "#00D4FF",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(0,212,255,0.18)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(0,212,255,0.08)")}
           >
-            {orbPaused ? "Resume" : "Pause"}
+            {orbPaused
+              ? <><Play size={12} strokeWidth={2.5} /> Resume</>
+              : <><Pause size={12} strokeWidth={2.5} /> Pause</>
+            }
           </button>
-          <span className="text-white/20 text-xs">|</span>
+
+          {/* Switch to Text */}
           <button
             onClick={onOrbTap}
-            className="text-white/40 text-xs font-['Barlow'] font-500 tracking-wide uppercase hover:text-white/70 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.75)",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
           >
-            Switch to Text
+            <MessageSquare size={12} strokeWidth={2.5} /> Switch to Text
           </button>
-          <span className="text-white/20 text-xs">|</span>
+
+          {/* Book Assessment — primary cyan */}
           <button
             onClick={onBookAssessment}
-            className="text-white/40 text-xs font-['Barlow'] font-500 tracking-wide uppercase hover:text-white/70 transition-colors"
+            className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-['Barlow'] font-bold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "linear-gradient(135deg, #00D4FF 0%, #00b8d9 100%)",
+              border: "none",
+              color: "#0a0f1e",
+            }}
           >
-            Book Assessment
+            <CalendarCheck size={12} strokeWidth={2.5} /> Book Assessment
           </button>
-          <span className="text-white/20 text-xs">|</span>
-          <button
-            onClick={onRequestCall}
-            className="text-white/40 text-xs font-['Barlow'] font-500 tracking-wide uppercase hover:text-white/70 transition-colors"
-          >
-            Request a Call
-          </button>
-        </div>
 
-        {/* Request human option */}
-        <div
-          className="mt-10 animate-fade-in-up"
-          style={{ animationDelay: "0.85s", opacity: 0, animationFillMode: "forwards" }}
-        >
-          <p className="text-white/40 text-sm font-['Barlow'] mb-3">
-            Prefer to speak with someone directly?
-          </p>
+          {/* Request a Call */}
           <button
             onClick={onRequestCall}
-            className="b20-btn-outline text-sm"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.75)",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.background = "rgba(255,255,255,0.12)")}
+            onMouseLeave={e => (e.currentTarget.style.background = "rgba(255,255,255,0.05)")}
           >
-            Request a Call from the Studio
+            <PhoneCall size={12} strokeWidth={2.5} /> Request a Call
           </button>
         </div>
       </div>
