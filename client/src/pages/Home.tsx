@@ -1,25 +1,74 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
-
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
+/*
+ * BODY20 East Cobb — QR Landing Page — Home
+ * Design: Corporate Athletic Minimalism
+ * Colors: Black #000, Red #E31837, White #FFF
+ * Fonts: Barlow Condensed (headlines), Barlow (body)
+ * NO blue. NO neon. NO rounded buttons. NO SaaS vibes.
  */
+
+import { useState, useEffect, useRef } from "react";
+import Header from "@/components/Header";
+import OrbSection from "@/components/OrbSection";
+import ChatPanel from "@/components/ChatPanel";
+import BookingSection from "@/components/BookingSection";
+import LongevitySection from "@/components/LongevitySection";
+import StickyBookingBar from "@/components/StickyBookingBar";
+import CallModal from "@/components/CallModal";
+import LongevityModal from "@/components/LongevityModal";
+import CalendarModal from "@/components/CalendarModal";
+import Footer from "@/components/Footer";
+
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
+  const [chatOpen, setChatOpen] = useState(false);
+  const [callModalOpen, setCallModalOpen] = useState(false);
+  const [longevityModalOpen, setLongevityModalOpen] = useState(false);
+  const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+
+  const bookingRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBooking = () => {
+    bookingRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
-      </main>
+    <div className="min-h-screen bg-black text-white overflow-x-hidden">
+      <Header />
+
+      {/* Hero / Orb Section */}
+      <OrbSection
+        onOrbTap={() => setChatOpen(true)}
+        onRequestCall={() => setCallModalOpen(true)}
+        onBookAssessment={scrollToBooking}
+      />
+
+      {/* Chat Panel — slides in when orb is tapped */}
+      <ChatPanel
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        onBookAssessment={() => {
+          setChatOpen(false);
+          setTimeout(scrollToBooking, 300);
+        }}
+      />
+
+      {/* Booking Section */}
+      <div ref={bookingRef}>
+        <BookingSection onOpenCalendar={() => setCalendarModalOpen(true)} />
+      </div>
+
+      {/* Longevity Roadmap Section */}
+      <LongevitySection onOpenModal={() => setLongevityModalOpen(true)} />
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Sticky bottom CTA */}
+      <StickyBookingBar onBook={scrollToBooking} />
+
+      {/* Modals */}
+      <CallModal open={callModalOpen} onClose={() => setCallModalOpen(false)} />
+      <LongevityModal open={longevityModalOpen} onClose={() => setLongevityModalOpen(false)} />
+      <CalendarModal open={calendarModalOpen} onClose={() => setCalendarModalOpen(false)} />
     </div>
   );
 }
