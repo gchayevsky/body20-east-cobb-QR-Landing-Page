@@ -1,7 +1,7 @@
 /*
- * LongevitySection — BODY20 Corporate Athletic Minimalism
+ * LongevitySection — BODY20 East Cobb QR Landing Page
  * "Not Ready to Book Yet?" — Longevity Roadmap CTA
- * Black background, red divider, white text
+ * Palette: slightly lighter navy card bg, cyan accent, white text — matches lead magnet
  */
 
 interface LongevitySectionProps {
@@ -10,9 +10,9 @@ interface LongevitySectionProps {
 
 export default function LongevitySection({ onOpenModal }: LongevitySectionProps) {
   return (
-    <section className="bg-black py-20 px-6">
+    <section className="py-20 px-6" style={{ backgroundColor: "oklch(0.17 0.022 250)" }}>
       <div className="max-w-4xl mx-auto">
-        {/* Red divider */}
+        {/* Cyan divider */}
         <div className="b20-divider mb-12" />
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
@@ -23,7 +23,8 @@ export default function LongevitySection({ onOpenModal }: LongevitySectionProps)
               className="font-['Barlow_Condensed'] font-800 text-white uppercase leading-none mb-6"
               style={{ fontSize: "clamp(2rem, 5vw, 3rem)" }}
             >
-              Explore What's Possible
+              Explore What's{" "}
+              <span style={{ color: "#00D4FF" }}>Possible</span>
             </h2>
             <p className="text-white/60 font-['Barlow'] font-300 text-base leading-relaxed mb-8">
               Explore what's realistically possible in 3, 6, and 12 months — based on your starting point and modern longevity science.
@@ -42,11 +43,17 @@ export default function LongevitySection({ onOpenModal }: LongevitySectionProps)
             ].map((item) => (
               <div
                 key={item.period}
-                className="border border-white/10 bg-[#111] p-5 flex gap-4 items-start"
-                style={{ borderRadius: "2px" }}
+                className="p-5 flex gap-4 items-start rounded-lg"
+                style={{
+                  backgroundColor: "oklch(0.20 0.025 250)",
+                  border: "1px solid rgba(0, 212, 255, 0.12)",
+                }}
               >
                 <div className="flex-shrink-0">
-                  <span className="font-['Barlow_Condensed'] font-700 text-[#E31837] text-lg uppercase tracking-wide">
+                  <span
+                    className="font-['Barlow_Condensed'] font-700 text-lg uppercase tracking-wide"
+                    style={{ color: "#00D4FF" }}
+                  >
                     {item.period}
                   </span>
                 </div>

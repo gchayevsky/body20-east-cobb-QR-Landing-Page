@@ -1,7 +1,7 @@
 /*
- * CalendarModal — BODY20 Corporate Athletic Minimalism
+ * CalendarModal — BODY20 East Cobb QR Landing Page
  * Full-screen calendar booking modal (triggered from chat CTA)
- * Black background, red selected state, white text
+ * Palette: deep navy bg, cyan accent, white text — matches lead magnet site
  */
 
 import { useState } from "react";
@@ -50,11 +50,17 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
 
   return (
     <>
-      <div className="fixed inset-0 bg-black/80 z-50 backdrop-blur-sm" onClick={handleClose} />
       <div
-        className="fixed z-50 bg-[#0d0d0d] border border-white/10 w-full max-w-lg mx-auto animate-fade-in-up"
+        className="fixed inset-0 z-50 backdrop-blur-sm"
+        style={{ backgroundColor: "oklch(0.10 0.02 250 / 0.85)" }}
+        onClick={handleClose}
+      />
+      <div
+        className="fixed z-50 w-full max-w-lg mx-auto animate-fade-in-up"
         style={{
-          borderRadius: "2px",
+          backgroundColor: "oklch(0.18 0.025 250)",
+          border: "1px solid rgba(0, 212, 255, 0.2)",
+          borderRadius: "12px",
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
@@ -63,7 +69,10 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-white/10">
+        <div
+          className="flex items-center justify-between px-6 py-5"
+          style={{ borderBottom: "1px solid rgba(0, 212, 255, 0.12)" }}
+        >
           <div>
             <p className="b20-label mb-1">Book Now</p>
             <h3 className="font-['Barlow_Condensed'] font-700 text-white text-xl uppercase tracking-wide">
@@ -79,8 +88,14 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
           {!confirmed ? (
             <>
               {/* Pricing reminder */}
-              <div className="flex items-center gap-3 bg-[#1a1a1a] border border-white/5 px-4 py-3 mb-6" style={{ borderRadius: "2px" }}>
-                <span className="font-['Barlow_Condensed'] font-700 text-[#E31837] text-lg">$49</span>
+              <div
+                className="flex items-center gap-3 px-4 py-3 mb-6 rounded-lg"
+                style={{
+                  backgroundColor: "oklch(0.22 0.025 250)",
+                  border: "1px solid rgba(0, 212, 255, 0.1)",
+                }}
+              >
+                <span className="font-['Barlow_Condensed'] font-700 text-lg" style={{ color: "#00D4FF" }}>$49</span>
                 <span className="text-white/50 text-sm font-['Barlow']">Assessment — credited toward membership if you join</span>
               </div>
 
@@ -93,17 +108,19 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
                     <button
                       key={d.toISOString()}
                       onClick={() => { setSelectedDate(d); setSelectedTime(null); }}
-                      className="flex flex-col items-center py-3 border transition-all duration-150"
+                      className="flex flex-col items-center py-3 rounded-lg transition-all duration-150"
                       style={{
-                        borderRadius: "2px",
-                        borderColor: isSelected ? "#E31837" : "rgba(255,255,255,0.1)",
-                        backgroundColor: isSelected ? "#E31837" : "transparent",
+                        border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
+                        backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",
                       }}
                     >
                       <span className="text-white/50 text-[10px] font-['Barlow'] uppercase tracking-wide">
                         {d.toLocaleDateString("en-US", { weekday: "short" })}
                       </span>
-                      <span className="font-['Barlow_Condensed'] font-700 text-lg text-white">
+                      <span
+                        className="font-['Barlow_Condensed'] font-700 text-lg"
+                        style={{ color: isSelected ? "#00D4FF" : "#ffffff" }}
+                      >
                         {d.getDate()}
                       </span>
                     </button>
@@ -114,9 +131,7 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
               {/* Time slots */}
               {selectedDate && (
                 <div className="animate-fade-in-up">
-                  <p className="b20-label mb-3">
-                    {formatDate(selectedDate)}
-                  </p>
+                  <p className="b20-label mb-3">{formatDate(selectedDate)}</p>
                   <div className="grid grid-cols-2 gap-2 mb-6">
                     {TIME_SLOTS.map((t) => {
                       const isSelected = selectedTime === t;
@@ -124,12 +139,11 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
                         <button
                           key={t}
                           onClick={() => setSelectedTime(t)}
-                          className="py-3 text-sm font-['Barlow'] font-500 border transition-all duration-150"
+                          className="py-3 text-sm font-['Barlow'] font-500 rounded-lg transition-all duration-150"
                           style={{
-                            borderRadius: "2px",
-                            borderColor: isSelected ? "#E31837" : "rgba(255,255,255,0.1)",
-                            backgroundColor: isSelected ? "#E31837" : "transparent",
-                            color: "#fff",
+                            border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
+                            backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",
+                            color: isSelected ? "#00D4FF" : "#ffffff",
                           }}
                         >
                           {t}
@@ -158,7 +172,7 @@ export default function CalendarModal({ open, onClose }: CalendarModalProps) {
             </>
           ) : (
             <div className="text-center py-8 animate-fade-in-up">
-              <CheckCircle size={40} className="text-[#E31837] mx-auto mb-4" />
+              <CheckCircle size={40} className="mx-auto mb-4" style={{ color: "#00D4FF" }} />
               <h4 className="font-['Barlow_Condensed'] font-700 text-white text-2xl uppercase mb-3">
                 Assessment Reserved
               </h4>

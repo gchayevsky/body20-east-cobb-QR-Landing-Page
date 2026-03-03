@@ -1,8 +1,7 @@
 /*
- * ChatPanel — BODY20 Corporate Athletic Minimalism
- * Simulated Jen conversation — dark bg, white text, red accents
- * Slides in from bottom on mobile, right side on desktop
- * NO emoji. NO cartoon styling.
+ * ChatPanel — BODY20 East Cobb QR Landing Page
+ * Simulated Jen conversation — deep navy bg, cyan accents, white text
+ * Palette matches lead magnet site: oklch(0.15 0.02 250) bg, #00D4FF accent
  */
 
 import { useState, useEffect, useRef } from "react";
@@ -51,17 +50,14 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
 
   useEffect(() => {
     if (open) {
-      // Reset state
       setVisibleMessages([]);
       setShowCTA(false);
       setIsTyping(false);
       timeoutsRef.current.forEach(clearTimeout);
       timeoutsRef.current = [];
 
-      // Schedule messages
-      CONVERSATION.forEach((msg, idx) => {
+      CONVERSATION.forEach((msg) => {
         if (msg.from === "jen") {
-          // Show typing indicator before Jen's message
           const typingTimeout = setTimeout(() => setIsTyping(true), msg.delay - 800);
           const msgTimeout = setTimeout(() => {
             setIsTyping(false);
@@ -76,7 +72,6 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
         }
       });
 
-      // Show CTA after final message
       const ctaTimeout = setTimeout(() => setShowCTA(true), 5200);
       timeoutsRef.current.push(ctaTimeout);
     } else {
@@ -98,22 +93,34 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
+        className="fixed inset-0 z-40 backdrop-blur-sm"
+        style={{ backgroundColor: "oklch(0.10 0.02 250 / 0.8)" }}
         onClick={onClose}
       />
 
-      {/* Panel */}
+      {/* Panel — deep navy, matches lead magnet */}
       <div
-        className="fixed z-50 bg-[#0d0d0d] border border-white/10 flex flex-col animate-chat-slide-up
+        className="fixed z-50 flex flex-col animate-chat-slide-up
           bottom-0 left-0 right-0 h-[85vh] rounded-t-none
           md:bottom-auto md:top-14 md:right-0 md:left-auto md:h-[calc(100vh-3.5rem)] md:w-[420px] md:rounded-none"
+        style={{
+          backgroundColor: "oklch(0.18 0.025 250)",
+          borderLeft: "1px solid rgba(0, 212, 255, 0.15)",
+          borderTop: "1px solid rgba(0, 212, 255, 0.15)",
+        }}
       >
         {/* Panel header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+        <div
+          className="flex items-center justify-between px-5 py-4"
+          style={{ borderBottom: "1px solid rgba(0, 212, 255, 0.15)" }}
+        >
           <div className="flex items-center gap-3">
-            {/* Jen avatar */}
-            <div className="w-8 h-8 rounded-full bg-[#E31837] flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-['Barlow_Condensed'] font-700 uppercase">J</span>
+            {/* Jen avatar — cyan */}
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ backgroundColor: "#00D4FF" }}
+            >
+              <span className="text-black text-xs font-['Barlow_Condensed'] font-700 uppercase">J</span>
             </div>
             <div>
               <p className="text-white text-sm font-['Barlow'] font-600">Jen</p>
@@ -137,17 +144,24 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
               className={`flex animate-message-appear ${msg.from === "user" ? "justify-end" : "justify-start"}`}
             >
               {msg.from === "jen" && (
-                <div className="w-6 h-6 rounded-full bg-[#E31837] flex items-center justify-center flex-shrink-0 mr-2 mt-1">
-                  <span className="text-white text-[10px] font-['Barlow_Condensed'] font-700">J</span>
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-1"
+                  style={{ backgroundColor: "#00D4FF" }}
+                >
+                  <span className="text-black text-[10px] font-['Barlow_Condensed'] font-700">J</span>
                 </div>
               )}
               <div
-                className={`max-w-[80%] px-4 py-3 text-sm font-['Barlow'] leading-relaxed ${
+                className={`max-w-[80%] px-4 py-3 text-sm font-['Barlow'] leading-relaxed rounded-lg ${
                   msg.from === "jen"
-                    ? "bg-[#1a1a1a] text-white border-l-2 border-[#E31837]"
-                    : "bg-[#2a2a2a] text-white/80"
+                    ? "text-white"
+                    : "text-white/80"
                 }`}
-                style={{ borderRadius: "2px" }}
+                style={{
+                  backgroundColor: msg.from === "jen" ? "oklch(0.22 0.025 250)" : "oklch(0.28 0.02 250)",
+                  borderLeft: msg.from === "jen" ? "2px solid #00D4FF" : "none",
+                  borderRadius: msg.from === "jen" ? "0 8px 8px 8px" : "8px 0 8px 8px",
+                }}
               >
                 {msg.text}
               </div>
@@ -157,10 +171,20 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
           {/* Typing indicator */}
           {isTyping && (
             <div className="flex justify-start animate-message-appear">
-              <div className="w-6 h-6 rounded-full bg-[#E31837] flex items-center justify-center flex-shrink-0 mr-2 mt-1">
-                <span className="text-white text-[10px] font-['Barlow_Condensed'] font-700">J</span>
+              <div
+                className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mr-2 mt-1"
+                style={{ backgroundColor: "#00D4FF" }}
+              >
+                <span className="text-black text-[10px] font-['Barlow_Condensed'] font-700">J</span>
               </div>
-              <div className="bg-[#1a1a1a] border-l-2 border-[#E31837] px-4 py-3" style={{ borderRadius: "2px" }}>
+              <div
+                className="px-4 py-3 rounded-lg"
+                style={{
+                  backgroundColor: "oklch(0.22 0.025 250)",
+                  borderLeft: "2px solid #00D4FF",
+                  borderRadius: "0 8px 8px 8px",
+                }}
+              >
                 <div className="flex gap-1 items-center h-4">
                   <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                   <span className="w-1.5 h-1.5 bg-white/40 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
@@ -185,15 +209,22 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area — decorative, shows it's a demo */}
-        <div className="px-5 py-4 border-t border-white/10">
-          <div className="flex items-center gap-3 bg-[#1a1a1a] px-4 py-3" style={{ borderRadius: "2px" }}>
+        {/* Input area — decorative */}
+        <div
+          className="px-5 py-4"
+          style={{ borderTop: "1px solid rgba(0, 212, 255, 0.15)" }}
+        >
+          <div
+            className="flex items-center gap-3 px-4 py-3 rounded-lg"
+            style={{ backgroundColor: "oklch(0.22 0.025 250)" }}
+          >
             <span className="text-white/20 text-sm font-['Barlow'] flex-1">
               Continue with Jen...
             </span>
             <button
               onClick={onBookAssessment}
-              className="text-[#E31837] text-xs font-['Barlow_Condensed'] font-700 uppercase tracking-wide hover:text-white transition-colors"
+              className="text-xs font-['Barlow'] font-600 uppercase tracking-wide hover:text-white transition-colors"
+              style={{ color: "#00D4FF" }}
             >
               Book Now
             </button>

@@ -1,8 +1,7 @@
 /*
- * BookingSection — BODY20 Corporate Athletic Minimalism
+ * BookingSection — BODY20 East Cobb QR Landing Page
  * Assessment details, pricing, and demo calendar UI
- * Black background, red accents, white text
- * Sharp corners, athletic spacing
+ * Palette: deep navy bg, cyan #00D4FF accent, white text — matches lead magnet site
  */
 
 import { useState } from "react";
@@ -17,14 +16,13 @@ const ASSESSMENT_INCLUDES = [
   "Personalized training prescription",
 ];
 
-// Generate demo calendar dates
 const today = new Date();
 const getDates = () => {
   const dates = [];
   for (let i = 1; i <= 14; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    if (d.getDay() !== 0) { // exclude Sundays
+    if (d.getDay() !== 0) {
       dates.push(d);
     }
   }
@@ -44,17 +42,13 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
 
   const dates = getDates();
 
-  const handleContinue = () => {
-    setConfirmed(true);
-  };
-
   const formatDate = (d: Date) =>
     d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <section className="bg-black py-20 px-6">
+    <section className="py-20 px-6" style={{ backgroundColor: "oklch(0.15 0.02 250)" }}>
       <div className="max-w-4xl mx-auto">
-        {/* Red divider */}
+        {/* Cyan divider */}
         <div className="b20-divider mb-12" />
 
         {/* Section label */}
@@ -79,14 +73,23 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
             <div className="space-y-3 mb-8">
               {ASSESSMENT_INCLUDES.map((item) => (
                 <div key={item} className="flex items-start gap-3">
-                  <div className="w-1 h-1 bg-[#E31837] rounded-full mt-2.5 flex-shrink-0" />
+                  <div
+                    className="w-1.5 h-1.5 rounded-full mt-2 flex-shrink-0"
+                    style={{ backgroundColor: "#00D4FF" }}
+                  />
                   <span className="text-white/80 font-['Barlow'] text-sm">{item}</span>
                 </div>
               ))}
             </div>
 
             {/* Pricing block */}
-            <div className="border border-white/10 bg-[#111] p-6 mb-4" style={{ borderRadius: "2px" }}>
+            <div
+              className="p-6 mb-4 rounded-lg"
+              style={{
+                backgroundColor: "oklch(0.20 0.025 250)",
+                border: "1px solid rgba(0, 212, 255, 0.15)",
+              }}
+            >
               <div className="flex items-baseline gap-3 mb-2">
                 <span className="b20-label">Assessment</span>
                 <span className="font-['Barlow_Condensed'] font-800 text-white text-3xl">$49</span>
@@ -101,7 +104,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
             </p>
 
             {/* EMS detail image */}
-            <div className="mt-8 overflow-hidden" style={{ borderRadius: "2px" }}>
+            <div className="mt-8 overflow-hidden rounded-lg">
               <img
                 src={EMS_DETAIL_IMG}
                 alt="BODY20 EMS Technology"
@@ -122,17 +125,19 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
                   <button
                     key={d.toISOString()}
                     onClick={() => { setSelectedDate(d); setSelectedTime(null); setConfirmed(false); }}
-                    className="flex flex-col items-center py-3 border transition-all duration-150"
+                    className="flex flex-col items-center py-3 rounded-lg transition-all duration-150"
                     style={{
-                      borderRadius: "2px",
-                      borderColor: isSelected ? "#E31837" : "rgba(255,255,255,0.1)",
-                      backgroundColor: isSelected ? "#E31837" : "transparent",
+                      border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
+                      backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",
                     }}
                   >
                     <span className="text-white/50 text-[10px] font-['Barlow'] uppercase tracking-wide">
                       {d.toLocaleDateString("en-US", { weekday: "short" })}
                     </span>
-                    <span className={`font-['Barlow_Condensed'] font-700 text-lg ${isSelected ? "text-white" : "text-white"}`}>
+                    <span
+                      className="font-['Barlow_Condensed'] font-700 text-lg"
+                      style={{ color: isSelected ? "#00D4FF" : "#ffffff" }}
+                    >
                       {d.getDate()}
                     </span>
                   </button>
@@ -153,12 +158,11 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
                       <button
                         key={t}
                         onClick={() => { setSelectedTime(t); setConfirmed(false); }}
-                        className="py-2.5 text-sm font-['Barlow'] font-500 border transition-all duration-150"
+                        className="py-2.5 text-sm font-['Barlow'] font-500 rounded-lg transition-all duration-150"
                         style={{
-                          borderRadius: "2px",
-                          borderColor: isSelected ? "#E31837" : "rgba(255,255,255,0.1)",
-                          backgroundColor: isSelected ? "#E31837" : "transparent",
-                          color: "#fff",
+                          border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
+                          backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",
+                          color: isSelected ? "#00D4FF" : "#ffffff",
                         }}
                       >
                         {t}
@@ -169,11 +173,11 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
               </div>
             )}
 
-            {/* CTA — appears when time is selected */}
+            {/* CTA */}
             {selectedTime && !confirmed && (
               <div className="animate-fade-in-up">
                 <button
-                  onClick={handleContinue}
+                  onClick={() => setConfirmed(true)}
                   className="b20-btn-primary w-full"
                 >
                   Continue to Secure Payment
@@ -181,14 +185,17 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
               </div>
             )}
 
-            {/* Confirmation message */}
+            {/* Confirmation */}
             {confirmed && (
               <div
-                className="border border-[#E31837]/30 bg-[#E31837]/5 p-5 animate-fade-in-up"
-                style={{ borderRadius: "2px" }}
+                className="p-5 animate-fade-in-up rounded-lg"
+                style={{
+                  border: "1px solid rgba(0, 212, 255, 0.3)",
+                  backgroundColor: "rgba(0, 212, 255, 0.05)",
+                }}
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <CheckCircle size={18} className="text-[#E31837]" />
+                  <CheckCircle size={18} style={{ color: "#00D4FF" }} />
                   <span className="text-white font-['Barlow'] font-600 text-sm">Assessment Reserved</span>
                 </div>
                 <p className="text-white/60 text-sm font-['Barlow'] leading-relaxed">
@@ -200,7 +207,6 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
               </div>
             )}
 
-            {/* No date selected prompt */}
             {!selectedDate && (
               <p className="text-white/30 text-sm font-['Barlow'] text-center py-4">
                 Select a date above to see available times.
