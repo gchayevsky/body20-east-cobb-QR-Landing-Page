@@ -163,13 +163,13 @@ export default function MemberTestimonials() {
         {/* CTA below videos */}
         <div className="text-center mt-10">
           <a
-            href="https://app.fitgro.ai/v2/preview/5hW5al2XnEPdyjXVR2Ml"
+            href="https://app.fitgro.ai/v2/preview/VTPEBBXiRyFKig8PSWi7"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:opacity-80"
             style={{ color: "#00D4FF", textDecoration: "none" }}
           >
-            View Full Landing Page
+            More About BODY20
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
