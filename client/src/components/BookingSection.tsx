@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { CheckCircle } from "lucide-react";
 
-const EMS_DETAIL_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-ems-detail-Na5B8nE4R9WvUiUmvK6eEq.webp";
+const EMS_DETAIL_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-ems-suit-photo_5a3e3ada.png";
 
 const ASSESSMENT_INCLUDES = [
   "Initial Consultation",
