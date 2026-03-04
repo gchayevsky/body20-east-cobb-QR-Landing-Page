@@ -142,27 +142,8 @@ export default function WhatIsEMS() {
           ))}
         </div>
 
-        {/* ── Why it works — pull quote ── */}
-        <div
-          className="rounded-xl px-8 py-7 text-center max-w-3xl mx-auto"
-          style={{
-            background: "rgba(0,212,255,0.05)",
-            border: "1px solid rgba(0,212,255,0.2)",
-          }}
-        >
-          <p
-            className="font-['Barlow_Condensed'] font-bold uppercase text-white leading-snug mb-3"
-            style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)", letterSpacing: "0.02em" }}
-          >
-            "EMS helps your body activate dramatically more muscle fibers than voluntary movement alone — which is why 20 minutes replaces hours in the gym."
-          </p>
-          <p className="text-white/35 font-['Barlow'] text-xs uppercase tracking-widest">
-            BODY20 Science of EMS — Appendix C
-          </p>
-        </div>
-
         {/* Bottom note */}
-        <p className="text-white/25 font-['Barlow'] text-xs text-center mt-8 max-w-lg mx-auto">
+        <p className="text-white/25 font-['Barlow'] text-xs text-center mt-4 max-w-lg mx-auto">
           BODY20 uses FDA-cleared, medical-grade EMS technology. Every session is led one-on-one by a certified trainer.
         </p>
 
