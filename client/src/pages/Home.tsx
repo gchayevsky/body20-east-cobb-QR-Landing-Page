@@ -11,6 +11,7 @@ import OrbSection from "@/components/OrbSection";
 import ChatPanel from "@/components/ChatPanel";
 import GoogleReviewStrip from "@/components/GoogleReviewStrip";
 import MemberTestimonials from "@/components/MemberTestimonials";
+import WhatIsEMS from "@/components/WhatIsEMS";
 import BookingSection from "@/components/BookingSection";
 import LongevitySection from "@/components/LongevitySection";
 import StickyBookingBar from "@/components/StickyBookingBar";
@@ -67,6 +68,9 @@ export default function Home() {
 
       {/* Member Testimonial Videos */}
       <MemberTestimonials />
+
+      {/* What Is EMS? — educates cold passersby before booking */}
+      <WhatIsEMS />
 
       {/* Booking Section */}
       <div ref={bookingRef}>
