@@ -1,8 +1,13 @@
 /*
  * Footer — BODY20 East Cobb QR Landing Page
- * Minimal: studio info, phone, address
+ * Minimal: studio info, phone, address, legal links
  * Palette: deep navy bg, cyan accent, white/gray text — matches lead magnet site
+ * Official corporate legal URLs sourced from body20.com footer (March 2026)
  */
+
+const PRIVACY_URL = "https://www.body20.com/privacy-policy?hsLang=en";
+const TERMS_URL = "https://www.body20.com/terms?hsLang=en";
+const PRIVACY_CHOICES_URL = "https://www.body20.com/privacy-choices?hsLang=en";
 
 export default function Footer() {
   return (
@@ -47,9 +52,9 @@ export default function Footer() {
           <p className="text-white/20 text-xs font-['Barlow']">
             &copy; {new Date().getFullYear()} BODY20 East Cobb. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap justify-center">
             <a
-              href="https://www.body20.com/privacy-policy"
+              href={PRIVACY_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/25 text-xs font-['Barlow'] hover:text-white/50 transition-colors underline"
@@ -59,13 +64,23 @@ export default function Footer() {
             </a>
             <span className="text-white/10 text-xs">·</span>
             <a
-              href="https://www.body20.com/terms"
+              href={TERMS_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/25 text-xs font-['Barlow'] hover:text-white/50 transition-colors underline"
               style={{ color: "rgba(0,212,255,0.35)" }}
             >
-              Terms of Use
+              Terms {"&"} Conditions
+            </a>
+            <span className="text-white/10 text-xs">·</span>
+            <a
+              href={PRIVACY_CHOICES_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/25 text-xs font-['Barlow'] hover:text-white/50 transition-colors underline"
+              style={{ color: "rgba(0,212,255,0.35)" }}
+            >
+              Privacy Choices
             </a>
           </div>
         </div>
