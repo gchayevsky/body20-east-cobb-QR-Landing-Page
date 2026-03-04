@@ -9,7 +9,8 @@ import { useState, useEffect } from "react";
 import { Pause, Play, MessageSquare, CalendarCheck, PhoneCall } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
-const ORB_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-orb-cyan-ZkyKqZC3uPGiX8CoHPnEQk.webp";
+const ORB_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-ai-orb-v2-STiwe4xJjp2he3uRS3mdj7.webp";
+const JEN_AVATAR = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-5V83tZpAMPrgJJnm3mBiCp.webp";
 
 interface OrbSectionProps {
   onOrbTap: () => void;
@@ -96,55 +97,93 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
           }}
         />
 
-        {/* ORB — auto-starts, click opens chat */}
+        {/* JEN AVATAR + ORB — stacked, avatar below orb */}
         <div
-          className="relative cursor-pointer group transition-all duration-700"
+          className="flex flex-col items-center gap-0 transition-all duration-700"
           style={{
             transitionDelay: "0.3s",
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(20px)",
           }}
-          onClick={onOrbTap}
-          role="button"
-          aria-label="Open Jen AI chat"
         >
-          {/* Outer ambient glow — cyan, pulses when active */}
+          {/* ORB — click opens chat */}
           <div
-            className="absolute rounded-full pointer-events-none"
-            style={{
-              inset: "-20px",
-              background: "radial-gradient(circle, rgba(0,212,255,0.18) 0%, transparent 70%)",
-              animation: orbPaused ? "none" : "orb-glow-pulse 3s ease-in-out infinite",
-              borderRadius: "50%",
-            }}
-          />
-          {/* Orb image */}
-          <div
-            className="relative w-52 h-52 md:w-60 md:h-60 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-105"
-            style={{
-              animation: orbPaused ? "none" : "orb-ring-pulse 3s ease-in-out infinite",
-              filter: "drop-shadow(0 0 24px rgba(0,212,255,0.35))",
-            }}
+            className="relative cursor-pointer group"
+            onClick={onOrbTap}
+            role="button"
+            aria-label="Open Jen AI chat"
           >
-            <img
-              src={ORB_IMG}
-              alt="BODY20 AI Orb — tap to chat with Jen"
-              className="w-full h-full object-cover"
-              draggable={false}
+            {/* Outer ambient glow — cyan, pulses when active */}
+            <div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                inset: "-24px",
+                background: "radial-gradient(circle, rgba(0,212,255,0.2) 0%, transparent 70%)",
+                animation: orbPaused ? "none" : "orb-glow-pulse 3s ease-in-out infinite",
+                borderRadius: "50%",
+              }}
             />
+            {/* Orb image — neural AI sphere */}
+            <div
+              className="relative w-44 h-44 md:w-52 md:h-52 rounded-full overflow-hidden transition-transform duration-300 group-hover:scale-105"
+              style={{
+                animation: orbPaused ? "none" : "orb-ring-pulse 3s ease-in-out infinite",
+                filter: "drop-shadow(0 0 28px rgba(0,212,255,0.4))",
+              }}
+            >
+              <img
+                src={ORB_IMG}
+                alt="BODY20 AI Orb — tap to chat with Jen"
+                className="w-full h-full object-cover"
+                draggable={false}
+              />
+            </div>
+          </div>
+
+          {/* Jen avatar card — below the orb */}
+          <div
+            className="flex flex-col items-center cursor-pointer group mt-4"
+            onClick={onOrbTap}
+            role="button"
+            aria-label="Chat with Jen"
+          >
+            {/* Connector line from orb to avatar */}
+            <div
+              className="w-px h-5"
+              style={{ background: "linear-gradient(to bottom, rgba(0,212,255,0.4), rgba(0,212,255,0.15))" }}
+            />
+            {/* Avatar card */}
+            <div
+              className="flex items-center gap-3 px-4 py-2.5 rounded-full transition-all duration-200 group-hover:scale-105"
+              style={{
+                background: "rgba(0,212,255,0.08)",
+                border: "1px solid rgba(0,212,255,0.3)",
+                backdropFilter: "blur(8px)",
+              }}
+            >
+              <div
+                className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0"
+                style={{ border: "2px solid rgba(0,212,255,0.6)" }}
+              >
+                <img
+                  src={JEN_AVATAR}
+                  alt="Jen — BODY20 AI Assistant"
+                  className="w-full h-full object-cover object-top"
+                  draggable={false}
+                />
+              </div>
+              <div className="text-left">
+                <p className="text-white text-sm font-['Barlow'] font-semibold leading-tight">Jen</p>
+                <p className="text-white/50 text-xs font-['Barlow'] leading-tight">BODY20 AI · Tap to chat</p>
+              </div>
+              {/* Live pulse dot */}
+              <span
+                className="w-2 h-2 rounded-full animate-pulse flex-shrink-0"
+                style={{ backgroundColor: "#00D4FF" }}
+              />
+            </div>
           </div>
         </div>
-
-        {/* Auto-start label — replaces "Tap to Begin" */}
-        <p
-          className="mt-3 text-white/45 text-xs font-['Barlow'] tracking-widest uppercase transition-all duration-700"
-          style={{
-            transitionDelay: "0.4s",
-            opacity: visible ? 0.45 : 0,
-          }}
-        >
-          Tap orb to chat with Jen
-        </p>
 
         {/* ── Redesigned pill-chip orb controls ── */}
         <div
