@@ -141,6 +141,20 @@ export default function CallModal({ open, onClose }: CallModalProps) {
               <button type="submit" className="b20-btn-primary w-full mt-2">
                 Request My Call
               </button>
+              {/* Privacy notice */}
+              <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
+                By submitting, you agree to be contacted by BODY20 East Cobb regarding your request.
+                Your information is encrypted in transit and will not be sold or shared with third parties.{" "}
+                <a
+                  href="https://www.body20.com/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline hover:text-white/50 transition-colors"
+                  style={{ color: "rgba(0,212,255,0.5)" }}
+                >
+                  Privacy Policy
+                </a>
+              </p>
             </form>
           ) : (
             <div className="text-center py-6 animate-fade-in-up">

@@ -43,9 +43,32 @@ export default function Footer() {
 
         <div className="b20-divider mt-8 mb-6" />
 
-        <p className="text-white/20 text-xs font-['Barlow'] text-center">
-          &copy; {new Date().getFullYear()} BODY20 East Cobb. All rights reserved.
-        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-white/20 text-xs font-['Barlow']">
+            &copy; {new Date().getFullYear()} BODY20 East Cobb. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href="https://www.body20.com/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/25 text-xs font-['Barlow'] hover:text-white/50 transition-colors underline"
+              style={{ color: "rgba(0,212,255,0.35)" }}
+            >
+              Privacy Policy
+            </a>
+            <span className="text-white/10 text-xs">·</span>
+            <a
+              href="https://www.body20.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/25 text-xs font-['Barlow'] hover:text-white/50 transition-colors underline"
+              style={{ color: "rgba(0,212,255,0.35)" }}
+            >
+              Terms of Use
+            </a>
+          </div>
+        </div>
       </div>
     </footer>
   );
