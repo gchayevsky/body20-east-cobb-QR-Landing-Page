@@ -40,9 +40,15 @@ export default function Footer() {
             >
               770-450-6127
             </a>
-            <p className="text-white/30 text-xs font-['Barlow']">
-              East Cobb, Georgia
-            </p>
+            <a
+              href="https://maps.google.com/?q=1100+Johnson+Ferry+Road+Suite+270+Marietta+GA+30068"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/30 text-xs font-['Barlow'] hover:text-white/50 transition-colors leading-relaxed block"
+            >
+              1100 Johnson Ferry Road, Suite 270<br />
+              Marietta, GA 30068
+            </a>
           </div>
         </div>
 
