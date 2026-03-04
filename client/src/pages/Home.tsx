@@ -27,6 +27,13 @@ export default function Home() {
 
   const bookingRef = useRef<HTMLDivElement>(null);
 
+  const BOOKING_URL = "https://www.body20.com/location/east-cobb";
+
+  const openBooking = () => {
+    window.open(BOOKING_URL, "_blank", "noopener,noreferrer");
+  };
+
+  // Also scroll to the demo calendar section for users who want to preview
   const scrollToBooking = () => {
     bookingRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -42,7 +49,7 @@ export default function Home() {
       <OrbSection
         onOrbTap={() => setChatOpen(true)}
         onRequestCall={() => setCallModalOpen(true)}
-        onBookAssessment={scrollToBooking}
+        onBookAssessment={openBooking}
       />
 
       {/* Chat Panel — slides in when orb is tapped */}
@@ -51,7 +58,7 @@ export default function Home() {
         onClose={() => setChatOpen(false)}
         onBookAssessment={() => {
           setChatOpen(false);
-          setTimeout(scrollToBooking, 300);
+          openBooking();
         }}
       />
 
@@ -73,7 +80,7 @@ export default function Home() {
       <Footer />
 
       {/* Sticky bottom CTA */}
-      <StickyBookingBar onBook={scrollToBooking} />
+      <StickyBookingBar onBook={openBooking} />
 
       {/* Modals */}
       <CallModal open={callModalOpen} onClose={() => setCallModalOpen(false)} />

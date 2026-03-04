@@ -177,10 +177,12 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
             {selectedTime && !confirmed && (
               <div className="animate-fade-in-up">
                 <button
-                  onClick={() => setConfirmed(true)}
+                  onClick={() => {
+                    window.open("https://www.body20.com/location/east-cobb", "_blank", "noopener,noreferrer");
+                  }}
                   className="b20-btn-primary w-full"
                 >
-                  Continue to Secure Payment
+                  Continue to Secure Payment →
                 </button>
               </div>
             )}
