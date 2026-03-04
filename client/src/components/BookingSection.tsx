@@ -62,6 +62,20 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
           Book Your Assessment
         </h2>
 
+        {/* Two-step flow indicator */}
+        <div className="flex items-center gap-3 mb-10">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Barlow'] font-600" style={{ backgroundColor: "rgba(0,212,255,0.12)", border: "1px solid rgba(0,212,255,0.35)", color: "#00D4FF" }}>
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: "#00D4FF", color: "#0a0f1a" }}>1</span>
+            Pick a time below
+          </div>
+          <div className="text-white/30 text-lg">→</div>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Barlow'] font-600" style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.6)" }}>
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: "rgba(255,255,255,0.2)", color: "white" }}>2</span>
+            Secure your $49 spot
+          </div>
+          <div className="text-white/30 text-sm ml-2 hidden md:block font-['Barlow'] italic">— Payment processed via ClubReady</div>
+        </div>
+
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* Left: Assessment details */}
           <div>
@@ -178,7 +192,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
               <div className="animate-fade-in-up">
                 <button
                   onClick={() => {
-                    window.open("https://www.body20.com/location/east-cobb", "_blank", "noopener,noreferrer");
+                    window.open("https://app.clubready.com/JoinUs/13604/640909", "_blank", "noopener,noreferrer");
                   }}
                   className="b20-btn-primary w-full"
                 >
