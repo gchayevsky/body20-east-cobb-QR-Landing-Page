@@ -89,6 +89,21 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
           Personalized neuromuscular training — right here in East Cobb.
         </p>
 
+        {/* ── Meet Jen headline ── */}
+        <p
+          className="font-['Barlow_Condensed'] font-bold uppercase text-white tracking-wide transition-all duration-700"
+          style={{
+            fontSize: "clamp(1.1rem, 3.5vw, 1.5rem)",
+            transitionDelay: "0.24s",
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(10px)",
+            marginBottom: "0.25rem",
+          }}
+        >
+          Meet Jen,{" "}
+          <span style={{ color: "#00D4FF" }}>Your BODY20 AI Guide</span>
+        </p>
+
         {/* ── Jen Portrait ── */}
         <div
           className="flex flex-col items-center gap-5 transition-all duration-700"
