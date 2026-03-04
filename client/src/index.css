@@ -279,4 +279,14 @@
   .animate-message-appear {
     animation: message-appear 0.3s ease forwards;
   }
+
+  /* CTA button pulse — box-shadow breathes to draw attention */
+  @keyframes cta-pulse {
+    0%, 100% {
+      box-shadow: 0 0 18px 4px rgba(0,212,255,0.35), 0 0 40px 8px rgba(0,212,255,0.12);
+    }
+    50% {
+      box-shadow: 0 0 36px 10px rgba(0,212,255,0.6), 0 0 70px 18px rgba(0,212,255,0.22);
+    }
+  }
 }

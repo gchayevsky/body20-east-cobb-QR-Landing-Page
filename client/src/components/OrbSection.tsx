@@ -105,13 +105,12 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             role="button"
             aria-label="Speak with Jen — BODY20 AI Guide"
           >
-            {/* Pulsing ambient glow */}
+            {/* Static ambient glow — no animation */}
             <div
               className="absolute rounded-full pointer-events-none"
               style={{
                 inset: "-28px",
-                background: "radial-gradient(circle, rgba(0,212,255,0.18) 0%, transparent 70%)",
-                animation: paused ? "none" : "orb-glow-pulse 3s ease-in-out infinite",
+                background: "radial-gradient(circle, rgba(0,212,255,0.12) 0%, transparent 70%)",
                 borderRadius: "50%",
               }}
             />
@@ -125,7 +124,6 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
                 borderRadius: "160px 160px 20px 20px",
                 border: "2px solid rgba(0,212,255,0.4)",
                 boxShadow: "0 0 60px rgba(0,212,255,0.25), 0 0 120px rgba(0,212,255,0.1)",
-                animation: paused ? "none" : "orb-ring-pulse 3s ease-in-out infinite",
               }}
             >
               <img
@@ -156,7 +154,6 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
                 className="w-2 h-2 rounded-full flex-shrink-0"
                 style={{
                   backgroundColor: "#00D4FF",
-                  animation: paused ? "none" : "orb-glow-pulse 2s ease-in-out infinite",
                 }}
               />
               <span className="text-white font-['Barlow'] font-semibold text-xs">Jen</span>
@@ -164,7 +161,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             </div>
           </div>
 
-          {/* Primary CTA */}
+          {/* Primary CTA — pulsing glow draws the eye */}
           <button
             onClick={onOrbTap}
             className="flex items-center gap-2 px-8 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
@@ -172,6 +169,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
               background: "linear-gradient(135deg, #00D4FF 0%, #00b8d9 100%)",
               color: "#0a0f1e",
               boxShadow: "0 0 24px rgba(0,212,255,0.35)",
+              animation: paused ? "none" : "cta-pulse 2.4s ease-in-out infinite",
             }}
           >
             <MessageSquare size={14} strokeWidth={2.5} />
