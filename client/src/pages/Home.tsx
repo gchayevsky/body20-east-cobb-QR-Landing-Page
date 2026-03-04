@@ -12,6 +12,7 @@ import ChatPanel from "@/components/ChatPanel";
 import GoogleReviewStrip from "@/components/GoogleReviewStrip";
 import MemberTestimonials from "@/components/MemberTestimonials";
 import WhatIsEMS from "@/components/WhatIsEMS";
+import AuthorityQuotes from "@/components/AuthorityQuotes";
 import BookingSection from "@/components/BookingSection";
 import LongevitySection from "@/components/LongevitySection";
 import StickyBookingBar from "@/components/StickyBookingBar";
@@ -63,14 +64,17 @@ export default function Home() {
         }}
       />
 
-      {/* Google Review Strip — between hero and booking */}
+      {/* What Is EMS? — right after hero so cold passersby understand before social proof */}
+      <WhatIsEMS />
+
+      {/* Google Review Strip */}
       <GoogleReviewStrip />
+
+      {/* Authority quotes — Gary Brecka + Peter Attia on strength & longevity */}
+      <AuthorityQuotes />
 
       {/* Member Testimonial Videos */}
       <MemberTestimonials />
-
-      {/* What Is EMS? — educates cold passersby before booking */}
-      <WhatIsEMS />
 
       {/* Booking Section */}
       <div ref={bookingRef}>
