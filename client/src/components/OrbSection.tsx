@@ -6,7 +6,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { Pause, Play, MessageSquare, CalendarCheck, PhoneCall } from "lucide-react";
+import { CalendarCheck, PhoneCall } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
 const JEN_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-full-9ztsJ4NuhsCBGXzvmUxito.webp";
@@ -18,7 +18,6 @@ interface OrbSectionProps {
 }
 
 export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }: OrbSectionProps) {
-  const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -176,24 +175,39 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             </div>
           </div>
 
-          {/* Primary CTA — pulsing glow draws the eye */}
-          <button
-            onClick={onOrbTap}
-            className="flex items-center gap-2 px-8 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
+          {/* ── Jen AI Voice Widget ── */}
+          {/* iframes.ai voice agent — Jen, BODY20 AI Guide */}
+          <div
+            className="w-full transition-all duration-700"
             style={{
-              background: "linear-gradient(135deg, #00D4FF 0%, #00b8d9 100%)",
-              color: "#0a0f1e",
-              boxShadow: "0 0 24px rgba(0,212,255,0.35)",
-              animation: paused ? "none" : "cta-pulse 2.4s ease-in-out infinite",
+              maxWidth: "clamp(280px, 50vw, 420px)",
+              transitionDelay: "0.32s",
             }}
           >
-            <MessageSquare size={14} strokeWidth={2.5} />
-            Speak with Jen
-          </button>
+            <iframe
+              src="https://iframes.ai/o/1772634390258x895947552529842200?color=10A37F&icon=activity"
+              allow="microphone"
+              style={{
+                width: "100%",
+                height: "200px",
+                border: "none",
+                borderRadius: "16px",
+              }}
+              id="assistantFrame"
+              title="Speak with Jen — BODY20 AI Guide"
+              onLoad={() => {
+                navigator.permissions?.query({ name: "microphone" as PermissionName })
+                  .then(result => {
+                    console.log('Microphone permission:', result.state);
+                  })
+                  .catch(() => {});
+              }}
+            />
+          </div>
 
           {/* Hint text */}
           <p className="text-white/30 font-['Barlow'] text-xs">
-            Tap to start — voice or text
+            Voice or text — Jen is ready
           </p>
         </div>
 
@@ -206,22 +220,6 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             transform: visible ? "translateY(0)" : "translateY(10px)",
           }}
         >
-          {/* Pause / Resume */}
-          <button
-            onClick={(e) => { e.stopPropagation(); setPaused(!paused); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
-            style={{
-              background: "rgba(0,212,255,0.07)",
-              border: "1px solid rgba(0,212,255,0.25)",
-              color: "#00D4FF",
-            }}
-          >
-            {paused
-              ? <><Play size={11} strokeWidth={2.5} /> Resume</>
-              : <><Pause size={11} strokeWidth={2.5} /> Pause</>
-            }
-          </button>
-
           {/* Book Assessment — solid fill */}
           <button
             onClick={onBookAssessment}
