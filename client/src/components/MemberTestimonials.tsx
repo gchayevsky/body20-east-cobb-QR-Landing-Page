@@ -106,27 +106,7 @@ function VideoCard({ video }: { video: typeof VIDEOS[0] }) {
         </div>
       </div>
 
-      {/* Bottom caption */}
-      <div className="absolute bottom-0 left-0 right-0 p-4">
-        <p className="text-white/85 text-xs font-['Barlow'] leading-snug mb-2">
-          {video.caption}
-        </p>
-        <div className="flex flex-wrap gap-1">
-          {video.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-xs font-['Barlow'] font-semibold px-2 py-0.5 rounded-full"
-              style={{
-                background: "rgba(0,212,255,0.12)",
-                border: "1px solid rgba(0,212,255,0.25)",
-                color: "#00D4FF",
-              }}
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
+
     </div>
   );
 }
