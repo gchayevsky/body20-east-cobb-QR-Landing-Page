@@ -289,4 +289,14 @@
       box-shadow: 0 0 36px 10px rgba(0,212,255,0.6), 0 0 70px 18px rgba(0,212,255,0.22);
     }
   }
+
+  @keyframes jen-ring-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  @keyframes jen-wave {
+    from { transform: scaleY(0.3); opacity: 0.4; }
+    to   { transform: scaleY(1.0); opacity: 0.9; }
+  }
 }

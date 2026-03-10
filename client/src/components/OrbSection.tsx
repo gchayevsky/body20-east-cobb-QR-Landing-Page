@@ -25,8 +25,8 @@ interface OrbSectionProps {
 
 export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }: OrbSectionProps) {
   const [visible, setVisible] = useState(false);
-  // Overlay states: "waiting" → show after delay, "ready" → pulsing tap prompt, "active" → dismissed
-  const [overlayState, setOverlayState] = useState<"waiting" | "ready" | "active">("waiting");
+  // Overlay states: "waiting" → show after delay, "ready" → pulsing tap prompt, "loading" → initializing animation, "active" → dismissed
+  const [overlayState, setOverlayState] = useState<"waiting" | "ready" | "loading" | "active">("waiting");
   const [jenSpeaking, setJenSpeaking] = useState(false);
   const [jenDone, setJenDone] = useState(false);
   const [iframePaused, setIframePaused] = useState(false);
@@ -41,13 +41,18 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
   }, []);
 
   const handleTapOverlay = () => {
-    setOverlayState("active");
-    setJenSpeaking(true);
-    // Simulate monologue duration ~28s then show conversation prompt
+    // Step 1: show loading animation
+    setOverlayState("loading");
+    // Step 2: after ~2.5s loading, dismiss overlay and start Jen
     setTimeout(() => {
-      setJenSpeaking(false);
-      setJenDone(true);
-    }, 28000);
+      setOverlayState("active");
+      setJenSpeaking(true);
+      // Simulate monologue duration ~28s then show conversation prompt
+      setTimeout(() => {
+        setJenSpeaking(false);
+        setJenDone(true);
+      }, 28000);
+    }, 2500);
   };
 
   const handlePauseResume = () => {
@@ -228,7 +233,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
 
             {/* ── Tap-to-Start Overlay ── */}
             {/* Shows 2.5s after load, pulses to invite tap, dismisses on tap */}
-            {overlayState !== "active" && (
+            {(overlayState === "waiting" || overlayState === "ready") && (
               <button
                 onClick={handleTapOverlay}
                 className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl transition-all duration-500"
@@ -262,6 +267,78 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
                   </p>
                 </div>
               </button>
+            )}
+
+            {/* ── Loading Animation Overlay ── */}
+            {/* Appears after tap while voice widget initializes (~2.5s) */}
+            {overlayState === "loading" && (
+              <div
+                className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl"
+                style={{
+                  background: "rgba(10,15,30,0.95)",
+                  backdropFilter: "blur(8px)",
+                  border: "1px solid rgba(0,212,255,0.25)",
+                }}
+              >
+                {/* Animated concentric rings */}
+                <div className="relative flex items-center justify-center" style={{ width: 72, height: 72 }}>
+                  {/* Outer ring */}
+                  <div
+                    className="absolute rounded-full"
+                    style={{
+                      width: 72, height: 72,
+                      border: "2px solid rgba(0,212,255,0.15)",
+                      animation: "jen-ring-spin 2s linear infinite",
+                    }}
+                  />
+                  {/* Middle ring — faster, opposite direction */}
+                  <div
+                    className="absolute rounded-full"
+                    style={{
+                      width: 52, height: 52,
+                      border: "2px solid rgba(0,212,255,0.35)",
+                      borderTopColor: "#00D4FF",
+                      animation: "jen-ring-spin 1.2s linear infinite reverse",
+                    }}
+                  />
+                  {/* Inner dot */}
+                  <div
+                    className="rounded-full"
+                    style={{
+                      width: 12, height: 12,
+                      backgroundColor: "#00D4FF",
+                      animation: "cta-pulse 1.4s ease-in-out infinite",
+                    }}
+                  />
+                </div>
+
+                {/* Animated waveform bars */}
+                <div className="flex items-end gap-1" style={{ height: 24 }}>
+                  {[0.6, 1.0, 0.7, 1.0, 0.5, 0.9, 0.6].map((h, i) => (
+                    <div
+                      key={i}
+                      className="rounded-full"
+                      style={{
+                        width: 4,
+                        backgroundColor: "#00D4FF",
+                        animation: `jen-wave 0.8s ease-in-out infinite alternate`,
+                        animationDelay: `${i * 0.1}s`,
+                        height: `${h * 24}px`,
+                        opacity: 0.7,
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <div className="text-center px-6">
+                  <p className="text-white font-['Barlow_Condensed'] font-bold uppercase tracking-wide" style={{ fontSize: "1rem" }}>
+                    Connecting to Jen
+                  </p>
+                  <p className="text-white/40 font-['Barlow'] text-xs mt-1">
+                    Initializing voice assistant…
+                  </p>
+                </div>
+              </div>
             )}
           </div>
 
