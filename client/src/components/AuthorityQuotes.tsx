@@ -35,7 +35,7 @@ const quotes = [
 export default function AuthorityQuotes() {
   return (
     <section
-      className="py-16 px-6"
+      className="py-12 px-4 sm:px-6"
       style={{ backgroundColor: "oklch(0.15 0.02 250)" }}
     >
       <div className="max-w-5xl mx-auto">
@@ -58,16 +58,16 @@ export default function AuthorityQuotes() {
         </h2>
 
         {/* Sub-copy */}
-        <p className="text-white/50 font-['Barlow'] text-sm leading-relaxed text-center max-w-xl mx-auto mb-12">
+        <p className="text-white/50 font-['Barlow'] text-sm leading-relaxed text-center max-w-xl mx-auto mb-8">
           The world's leading longevity experts agree: building and maintaining muscle, maximizing cardiovascular capacity, and prioritizing recovery are the three most powerful investments you can make in your long-term health.
         </p>
 
         {/* Quote cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {quotes.map((q, i) => (
             <div
               key={i}
-              className="rounded-xl p-7 flex flex-col gap-5"
+              className="rounded-xl p-5 flex flex-col gap-4"
               style={{
                 background: "oklch(0.18 0.02 250)",
                 border: "1px solid rgba(0,212,255,0.12)",

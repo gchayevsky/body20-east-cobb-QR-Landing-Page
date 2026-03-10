@@ -46,7 +46,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
     d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return (
-    <section className="py-20 px-6" style={{ backgroundColor: "oklch(0.15 0.02 250)" }}>
+    <section className="py-12 px-4 sm:px-6" style={{ backgroundColor: "oklch(0.15 0.02 250)" }}>
       <div className="max-w-4xl mx-auto">
         {/* Cyan divider */}
         <div className="b20-divider mb-12" />
@@ -63,7 +63,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
         </h2>
 
         {/* Two-step flow indicator */}
-        <div className="flex items-center gap-3 mb-10">
+        <div className="flex flex-wrap items-center gap-2 mb-8">
           <div className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-['Barlow'] font-600" style={{ backgroundColor: "rgba(0,212,255,0.12)", border: "1px solid rgba(0,212,255,0.35)", color: "#00D4FF" }}>
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold" style={{ backgroundColor: "#00D4FF", color: "#0a0f1a" }}>1</span>
             Pick a time below
@@ -76,7 +76,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
           <div className="text-white/30 text-sm ml-2 hidden md:block font-['Barlow'] italic">— Payment processed via ClubReady</div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-12 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start">
           {/* Left: Assessment details */}
           <div>
             <p className="text-white/70 font-['Barlow'] font-300 text-base leading-relaxed mb-8">
@@ -132,14 +132,14 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
             <p className="b20-label mb-4">Select a Date</p>
 
             {/* Date grid */}
-            <div className="grid grid-cols-5 gap-2 mb-6">
+            <div className="grid grid-cols-5 gap-1.5 mb-6">
               {dates.map((d) => {
                 const isSelected = selectedDate?.toDateString() === d.toDateString();
                 return (
                   <button
                     key={d.toISOString()}
                     onClick={() => { setSelectedDate(d); setSelectedTime(null); setConfirmed(false); }}
-                    className="flex flex-col items-center py-3 rounded-lg transition-all duration-150"
+                    className="flex flex-col items-center py-3 rounded-lg transition-all duration-150 min-h-[52px]"
                     style={{
                       border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
                       backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",
@@ -172,7 +172,7 @@ export default function BookingSection({ onOpenCalendar }: BookingSectionProps) 
                       <button
                         key={t}
                         onClick={() => { setSelectedTime(t); setConfirmed(false); }}
-                        className="py-2.5 text-sm font-['Barlow'] font-500 rounded-lg transition-all duration-150"
+                        className="py-3 text-sm font-['Barlow'] font-500 rounded-lg transition-all duration-150 min-h-[44px]"
                         style={{
                           border: `1px solid ${isSelected ? "#00D4FF" : "rgba(255,255,255,0.1)"}`,
                           backgroundColor: isSelected ? "rgba(0, 212, 255, 0.15)" : "transparent",

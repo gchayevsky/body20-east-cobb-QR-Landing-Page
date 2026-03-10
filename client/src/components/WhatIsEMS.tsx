@@ -49,7 +49,7 @@ export default function WhatIsEMS() {
 
   return (
     <section
-      className="py-20 px-6"
+      className="py-14 px-4 sm:px-6"
       style={{ backgroundColor: "oklch(0.13 0.02 250)" }}
     >
       <div className="max-w-5xl mx-auto">
@@ -72,16 +72,16 @@ export default function WhatIsEMS() {
         </h2>
 
         {/* Sub-copy */}
-        <p className="text-white/55 font-['Barlow'] text-base leading-relaxed text-center max-w-2xl mx-auto mb-14">
+        <p className="text-white/55 font-['Barlow'] text-sm leading-relaxed text-center max-w-2xl mx-auto mb-10">
           Electrical Muscle Stimulation uses controlled impulses to activate dramatically more muscle fibers than voluntary movement alone — which is why 20 minutes at BODY20 replaces hours in the gym.
         </p>
 
         {/* ── Stat row ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-14">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-10">
           {stats.map((s) => (
             <div
               key={s.label}
-              className="flex flex-col items-center justify-center py-6 px-4 rounded-xl text-center"
+              className="flex flex-col items-center justify-center py-5 px-3 rounded-xl text-center"
               style={{
                 background: "oklch(0.18 0.02 250)",
                 border: "1px solid rgba(0,212,255,0.15)",
@@ -111,11 +111,11 @@ export default function WhatIsEMS() {
         </div>
 
         {/* ── Three modalities ── */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           {modalities.map((m) => (
             <div
               key={m.label}
-              className="rounded-xl p-7 flex flex-col gap-4"
+              className="rounded-xl p-5 flex flex-col gap-3"
               style={{
                 background: "oklch(0.18 0.02 250)",
                 border: "1px solid rgba(0,212,255,0.12)",

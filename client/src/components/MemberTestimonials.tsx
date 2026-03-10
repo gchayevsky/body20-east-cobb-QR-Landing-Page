@@ -92,7 +92,7 @@ function VideoCard({ video }: { video: typeof VIDEOS[0] }) {
         style={{ opacity: !playing || hovered ? 1 : 0 }}
       >
         <div
-          className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-110"
+          className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 group-hover:scale-110"
           style={{
             background: "rgba(0,212,255,0.2)",
             border: "2px solid rgba(0,212,255,0.7)",
@@ -100,8 +100,8 @@ function VideoCard({ video }: { video: typeof VIDEOS[0] }) {
           }}
         >
           {playing
-            ? <Pause size={18} color="#00D4FF" strokeWidth={2.5} />
-            : <Play size={18} color="#00D4FF" strokeWidth={2.5} style={{ marginLeft: "2px" }} />
+            ? <Pause size={20} color="#00D4FF" strokeWidth={2.5} />
+            : <Play size={20} color="#00D4FF" strokeWidth={2.5} style={{ marginLeft: "2px" }} />
           }
         </div>
       </div>
@@ -114,10 +114,10 @@ function VideoCard({ video }: { video: typeof VIDEOS[0] }) {
 export default function MemberTestimonials() {
   return (
     <section
-      className="py-16"
+      className="py-12"
       style={{ backgroundColor: "oklch(0.15 0.02 250)" }}
     >
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="text-center mb-10">
           <p className="b20-label mb-3">MEMBER TESTIMONIALS</p>
@@ -134,7 +134,7 @@ export default function MemberTestimonials() {
         </div>
 
         {/* Video grid — 2 cols mobile, 3 cols tablet, 6 cols desktop (portrait videos) */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {VIDEOS.map((v, i) => (
             <VideoCard key={i} video={v} />
           ))}

@@ -47,10 +47,10 @@ function StarRow() {
 export default function GoogleReviewStrip() {
   return (
     <section
-      className="py-14 overflow-hidden"
+      className="py-10 overflow-hidden"
       style={{ backgroundColor: "oklch(0.12 0.02 250)" }}
     >
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
@@ -90,11 +90,11 @@ export default function GoogleReviewStrip() {
           {REVIEWS.map((r) => (
             <div
               key={r.name}
-              className="flex-shrink-0 w-72 md:w-auto rounded-xl p-5 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-1"
+              className="flex-shrink-0 w-64 md:w-auto rounded-xl p-4 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-1"
               style={{
                 background: "rgba(255,255,255,0.04)",
                 border: "1px solid rgba(0,212,255,0.15)",
-                minWidth: "260px",
+                minWidth: "240px",
               }}
             >
               <StarRow />

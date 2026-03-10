@@ -12,14 +12,14 @@ const PRIVACY_CHOICES_URL = "https://www.body20.com/privacy-choices?hsLang=en";
 export default function Footer() {
   return (
     <footer
-      className="py-10 px-6 pb-24"
+      className="py-8 px-4 sm:px-6 pb-16"
       style={{
         backgroundColor: "oklch(0.13 0.02 250)",
         borderTop: "1px solid rgba(0, 212, 255, 0.12)",
       }}
     >
       <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           {/* Logo */}
           <div>
             <div className="font-['Barlow_Condensed'] font-800 text-white text-xl uppercase tracking-tight mb-1">
@@ -32,7 +32,7 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div className="text-right">
+          <div className="text-left md:text-right">
             <a
               href="tel:7704506127"
               className="text-white/60 text-sm font-['Barlow'] hover:text-white transition-colors block mb-1"
