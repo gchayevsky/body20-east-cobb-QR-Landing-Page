@@ -4,15 +4,21 @@
  * Design: Deep navy bg, cyan #00D4FF accent, white text
  * Mobile-first: 100% of traffic is mobile (QR scan)
  *
- * Interaction flow:
- *  1. Page loads → 2.5s delay → "Tap to hear from Jen" overlay pulses
- *  2. Lead taps overlay → overlay fades out → iframe widget activates
- *  3. While Jen speaks → Pause button visible
- *  4. After monologue → clear "Ask Jen anything" prompt visible
+ * Interaction flow (browser-safe):
+ *  1. Page loads → Jen portrait + iframes.ai widget visible immediately
+ *  2. A pulsing "Tap the button above to speak with Jen" hint arrow points to the widget
+ *  3. User taps the widget's own green button → voice activates (browser gesture satisfied)
+ *  4. Hint arrow disappears after first tap on the widget area
+ *
+ * WHY NO OVERLAY:
+ *  Browsers (especially iOS Safari) require the user's tap to land DIRECTLY on the
+ *  iframe element to grant microphone + audio autoplay. An overlay intercepts the gesture
+ *  before it reaches the iframe, so the widget never activates. The fix is to show the
+ *  iframe immediately and guide the user to tap it directly.
  */
 
-import { useState, useEffect, useRef } from "react";
-import { CalendarCheck, PhoneCall, Mic, MicOff } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CalendarCheck, PhoneCall, ChevronDown } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
 const JEN_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-full-9ztsJ4NuhsCBGXzvmUxito.webp";
@@ -25,43 +31,21 @@ interface OrbSectionProps {
 
 export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }: OrbSectionProps) {
   const [visible, setVisible] = useState(false);
-  // Overlay states: "waiting" → show after delay, "ready" → pulsing tap prompt, "loading" → initializing animation, "active" → dismissed
-  const [overlayState, setOverlayState] = useState<"waiting" | "ready" | "loading" | "active">("waiting");
-  const [jenSpeaking, setJenSpeaking] = useState(false);
-  const [jenDone, setJenDone] = useState(false);
-  const [iframePaused, setIframePaused] = useState(false);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [hintVisible, setHintVisible] = useState(false);
+  const [hintDismissed, setHintDismissed] = useState(false);
 
   useEffect(() => {
     // Fade in page content
     const t1 = setTimeout(() => setVisible(true), 80);
-    // Show tap overlay after 2.5s
-    const t2 = setTimeout(() => setOverlayState("ready"), 2500);
+    // Show hint arrow after 1.5s
+    const t2 = setTimeout(() => setHintVisible(true), 1500);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
-  const handleTapOverlay = () => {
-    // Step 1: show loading animation
-    setOverlayState("loading");
-    // Step 2: after ~2.5s loading, dismiss overlay and start Jen
-    setTimeout(() => {
-      setOverlayState("active");
-      setJenSpeaking(true);
-      // Simulate monologue duration ~28s then show conversation prompt
-      setTimeout(() => {
-        setJenSpeaking(false);
-        setJenDone(true);
-      }, 28000);
-    }, 2500);
-  };
-
-  const handlePauseResume = () => {
-    setIframePaused(p => !p);
-    // Send postMessage to iframe — iframes.ai may support this
-    iframeRef.current?.contentWindow?.postMessage(
-      iframePaused ? { type: "resume" } : { type: "pause" },
-      "*"
-    );
+  // Dismiss hint when user taps anywhere near the widget
+  const handleWidgetAreaTap = () => {
+    setHintDismissed(true);
+    setHintVisible(false);
   };
 
   return (
@@ -142,7 +126,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
           <span style={{ color: "#00D4FF" }}>Your BODY20 AI Guide</span>
         </p>
 
-        {/* ── Jen Portrait ── */}
+        {/* ── Jen Portrait + Widget ── */}
         <div
           className="flex flex-col items-center gap-4 w-full transition-all duration-700"
           style={{
@@ -205,14 +189,45 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             </div>
           </div>
 
-          {/* ── Jen AI Voice Widget + Overlay ── */}
+          {/* ── Hint label above widget ── */}
+          {!hintDismissed && (
+            <div
+              className="flex flex-col items-center gap-1 transition-all duration-500"
+              style={{
+                opacity: hintVisible ? 1 : 0,
+                transform: hintVisible ? "translateY(0)" : "translateY(-8px)",
+              }}
+            >
+              <p
+                className="font-['Barlow_Condensed'] font-bold uppercase tracking-wide"
+                style={{
+                  color: "#00D4FF",
+                  fontSize: "0.95rem",
+                  animation: hintVisible ? "cta-pulse 2.2s ease-in-out infinite" : "none",
+                }}
+              >
+                Tap the green button to speak with Jen
+              </p>
+              {/* Bouncing arrow pointing down to the widget */}
+              <ChevronDown
+                size={22}
+                color="#00D4FF"
+                strokeWidth={2.5}
+                style={{ animation: hintVisible ? "bounce-down 1.2s ease-in-out infinite" : "none" }}
+              />
+            </div>
+          )}
+
+          {/* ── iframes.ai voice agent widget ── */}
+          {/* The iframe is always visible so the user's tap lands directly on it.
+              This is required by browsers (especially iOS Safari) to grant microphone
+              and audio autoplay permissions. An overlay blocking the iframe prevents activation. */}
           <div
-            className="relative w-full"
+            className="w-full"
             style={{ maxWidth: "clamp(280px, 88vw, 400px)" }}
+            onClick={handleWidgetAreaTap}
           >
-            {/* iframes.ai voice agent widget */}
             <iframe
-              ref={iframeRef}
               src="https://iframes.ai/o/1772634390258x895947552529842200?color=10A37F&icon=activity"
               allow="microphone"
               style={{
@@ -230,140 +245,12 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
                   .catch(() => {});
               }}
             />
-
-            {/* ── Tap-to-Start Overlay ── */}
-            {/* Shows 2.5s after load, pulses to invite tap, dismisses on tap */}
-            {(overlayState === "waiting" || overlayState === "ready") && (
-              <button
-                onClick={handleTapOverlay}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-2xl transition-all duration-500"
-                style={{
-                  background: "rgba(10,15,30,0.92)",
-                  backdropFilter: "blur(6px)",
-                  border: "1px solid rgba(0,212,255,0.3)",
-                  opacity: overlayState === "ready" ? 1 : 0,
-                  pointerEvents: overlayState === "ready" ? "auto" : "none",
-                  cursor: "pointer",
-                }}
-                aria-label="Tap to hear Jen's introduction"
-              >
-                {/* Pulsing mic icon */}
-                <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center"
-                  style={{
-                    background: "rgba(0,212,255,0.12)",
-                    border: "2px solid rgba(0,212,255,0.6)",
-                    animation: overlayState === "ready" ? "cta-pulse 2s ease-in-out infinite" : "none",
-                  }}
-                >
-                  <Mic size={24} color="#00D4FF" strokeWidth={2} />
-                </div>
-                <div className="text-center px-4">
-                  <p className="text-white font-['Barlow_Condensed'] font-bold uppercase tracking-wide" style={{ fontSize: "1.1rem" }}>
-                    Tap to Hear from Jen
-                  </p>
-                  <p className="text-white/45 font-['Barlow'] text-xs mt-1">
-                    Jen will introduce herself and guide you
-                  </p>
-                </div>
-              </button>
-            )}
-
-            {/* ── Loading Animation Overlay ── */}
-            {/* Appears after tap while voice widget initializes (~2.5s) */}
-            {overlayState === "loading" && (
-              <div
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl"
-                style={{
-                  background: "rgba(10,15,30,0.95)",
-                  backdropFilter: "blur(8px)",
-                  border: "1px solid rgba(0,212,255,0.25)",
-                }}
-              >
-                {/* Animated concentric rings */}
-                <div className="relative flex items-center justify-center" style={{ width: 72, height: 72 }}>
-                  {/* Outer ring */}
-                  <div
-                    className="absolute rounded-full"
-                    style={{
-                      width: 72, height: 72,
-                      border: "2px solid rgba(0,212,255,0.15)",
-                      animation: "jen-ring-spin 2s linear infinite",
-                    }}
-                  />
-                  {/* Middle ring — faster, opposite direction */}
-                  <div
-                    className="absolute rounded-full"
-                    style={{
-                      width: 52, height: 52,
-                      border: "2px solid rgba(0,212,255,0.35)",
-                      borderTopColor: "#00D4FF",
-                      animation: "jen-ring-spin 1.2s linear infinite reverse",
-                    }}
-                  />
-                  {/* Inner dot */}
-                  <div
-                    className="rounded-full"
-                    style={{
-                      width: 12, height: 12,
-                      backgroundColor: "#00D4FF",
-                      animation: "cta-pulse 1.4s ease-in-out infinite",
-                    }}
-                  />
-                </div>
-
-                {/* Animated waveform bars */}
-                <div className="flex items-end gap-1" style={{ height: 24 }}>
-                  {[0.6, 1.0, 0.7, 1.0, 0.5, 0.9, 0.6].map((h, i) => (
-                    <div
-                      key={i}
-                      className="rounded-full"
-                      style={{
-                        width: 4,
-                        backgroundColor: "#00D4FF",
-                        animation: `jen-wave 0.8s ease-in-out infinite alternate`,
-                        animationDelay: `${i * 0.1}s`,
-                        height: `${h * 24}px`,
-                        opacity: 0.7,
-                      }}
-                    />
-                  ))}
-                </div>
-
-                <div className="text-center px-6">
-                  <p className="text-white font-['Barlow_Condensed'] font-bold uppercase tracking-wide" style={{ fontSize: "1rem" }}>
-                    Connecting to Jen
-                  </p>
-                  <p className="text-white/40 font-['Barlow'] text-xs mt-1">
-                    Initializing voice assistant…
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* ── Pause button — visible while Jen is speaking ── */}
-          {jenSpeaking && (
-            <button
-              onClick={handlePauseResume}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 active:scale-95"
-              style={{
-                background: "rgba(0,212,255,0.08)",
-                border: "1px solid rgba(0,212,255,0.35)",
-                color: "#00D4FF",
-              }}
-            >
-              {iframePaused
-                ? <><Mic size={14} strokeWidth={2.5} /> Resume Jen</>
-                : <><MicOff size={14} strokeWidth={2.5} /> Pause Jen</>
-              }
-            </button>
-          )}
-
-          {/* ── Post-monologue conversation prompt ── */}
-          {jenDone && (
+          {/* ── Post-hint conversation prompt ── */}
+          {hintDismissed && (
             <div
-              className="w-full rounded-xl px-5 py-4 text-center transition-all duration-700"
+              className="w-full rounded-xl px-5 py-4 text-center"
               style={{
                 maxWidth: "clamp(280px, 88vw, 400px)",
                 background: "rgba(0,212,255,0.06)",
@@ -379,13 +266,6 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
               </p>
             </div>
           )}
-
-          {/* Hint text — shown when overlay is active and Jen hasn't started yet */}
-          {overlayState === "active" && !jenSpeaking && !jenDone && (
-            <p className="text-white/30 font-['Barlow'] text-xs">
-              Voice or text — Jen is ready
-            </p>
-          )}
         </div>
 
         {/* ── Secondary control chips ── */}
@@ -400,35 +280,33 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
           {/* Book Assessment — solid fill, large tap target */}
           <button
             onClick={onBookAssessment}
-            className="flex items-center gap-2 px-6 py-3 rounded-full text-sm font-['Barlow'] font-bold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+            className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
             style={{
-              background: "linear-gradient(135deg, #00D4FF 0%, #00b8d9 100%)",
+              background: "#00D4FF",
               color: "#0a0f1e",
               minHeight: "44px",
+              animation: "cta-pulse 2.4s ease-in-out infinite",
             }}
           >
-            <CalendarCheck size={14} strokeWidth={2.5} /> Book Assessment
+            <CalendarCheck size={16} strokeWidth={2.5} />
+            Book Free Assessment
           </button>
 
-          {/* Request a Call — large tap target */}
-          <button
-            onClick={onRequestCall}
-            className="flex items-center gap-2 px-5 py-3 rounded-full text-sm font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95"
+          {/* Call us — ghost style */}
+          <a
+            href="tel:+17704506127"
+            className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
             style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.12)",
-              color: "rgba(255,255,255,0.65)",
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              color: "rgba(255,255,255,0.75)",
               minHeight: "44px",
             }}
           >
-            <PhoneCall size={14} strokeWidth={2.5} /> Request a Call
-          </button>
+            <PhoneCall size={15} strokeWidth={2} />
+            Call Us
+          </a>
         </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 opacity-20">
-        <div className="w-px h-8 animate-pulse" style={{ backgroundColor: "rgba(0,212,255,0.6)" }} />
       </div>
     </section>
   );
