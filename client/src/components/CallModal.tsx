@@ -2,6 +2,8 @@
  * CallModal — BODY20 East Cobb QR Landing Page
  * "Request a Call from the Studio" modal
  * Palette: deep navy bg, cyan accent, white text — matches lead magnet site
+ *
+ * On submit: calls /api/send-callback-sms to notify studio via Twilio
  */
 
 import { useState } from "react";
@@ -13,15 +15,41 @@ interface CallModalProps {
 }
 
 export default function CallModal({ open, onClose }: CallModalProps) {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [bestTime, setBestTime] = useState("");
+  const [name, setBestTime]   = useState("");
+  const [phone, setPhone]     = useState("");
+  const [bestTime, setBTime]  = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Alias for clarity
+  const nameVal = name;
+  const setName = setBestTime;
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && phone) {
+    if (!nameVal || !phone) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/send-callback-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nameVal, phone, bestTime }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error ?? "Something went wrong. Please try again.");
+      }
+
       setSubmitted(true);
+    } catch (err: any) {
+      setError(err?.message ?? "Failed to send. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -30,8 +58,9 @@ export default function CallModal({ open, onClose }: CallModalProps) {
     setTimeout(() => {
       setName("");
       setPhone("");
-      setBestTime("");
+      setBTime("");
       setSubmitted(false);
+      setError(null);
     }, 300);
   };
 
@@ -95,11 +124,11 @@ export default function CallModal({ open, onClose }: CallModalProps) {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
-                  Name
+                  Name <span style={{ color: "#00D4FF" }}>*</span>
                 </label>
                 <input
                   type="text"
-                  value={name}
+                  value={nameVal}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
                   required
@@ -109,7 +138,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
               </div>
               <div>
                 <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
-                  Phone
+                  Phone <span style={{ color: "#00D4FF" }}>*</span>
                 </label>
                 <input
                   type="tel"
@@ -127,7 +156,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                 </label>
                 <select
                   value={bestTime}
-                  onChange={(e) => setBestTime(e.target.value)}
+                  onChange={(e) => setBTime(e.target.value)}
                   className={`w-full px-4 py-3 text-sm font-['Barlow'] appearance-none ${inputFocusStyle}`}
                   style={inputStyle}
                 >
@@ -138,13 +167,26 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                   <option value="anytime" style={{ backgroundColor: "#1a2a3a" }}>Anytime</option>
                 </select>
               </div>
-              <button type="submit" className="b20-btn-primary w-full mt-2">
-                Request My Call
+
+              {error && (
+                <p className="text-red-400 text-xs font-['Barlow'] text-center">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                className="b20-btn-primary w-full mt-2"
+                disabled={loading}
+                style={loading ? { opacity: 0.7, cursor: "not-allowed" } : {}}
+              >
+                {loading ? "Sending…" : "Request My Call"}
               </button>
+
               {/* Privacy notice */}
               <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
                 By submitting, you agree to be contacted by BODY20 East Cobb regarding your request.
-                Your information is encrypted in transit and will not be sold or shared with third parties.{" "}
+                Message & data rates may apply.{" "}
                 <a
                   href="https://www.body20.com/privacy-policy"
                   target="_blank"
@@ -168,7 +210,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                 Request Received
               </h4>
               <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed">
-                Thanks. Our studio team will reach out shortly.
+                Thanks. Our studio team will reach out shortly. Or call us directly: 770-450-6127.
               </p>
               <button onClick={handleClose} className="b20-btn-outline mt-6 text-sm">
                 Close

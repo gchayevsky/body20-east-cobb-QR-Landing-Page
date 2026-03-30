@@ -2,6 +2,8 @@
  * LongevityModal — BODY20 East Cobb QR Landing Page
  * "Get the Longevity Roadmap" lead capture modal
  * Palette: deep navy bg, cyan accent, white text — matches lead magnet site
+ * 
+ * On submit: calls /api/send-roadmap-sms to text the lead a PDF link via Twilio
  */
 
 import { useState } from "react";
@@ -13,14 +15,37 @@ interface LongevityModalProps {
 }
 
 export default function LongevityModal({ open, onClose }: LongevityModalProps) {
-  const [name, setName] = useState("");
+  const [name, setName]   = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading]     = useState(false);
+  const [error, setError]         = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && email) {
+    if (!name || !phone) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/send-roadmap-sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone, email }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error ?? "Something went wrong. Please try again.");
+      }
+
       setSubmitted(true);
+    } catch (err: any) {
+      setError(err?.message ?? "Failed to send. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,8 +53,10 @@ export default function LongevityModal({ open, onClose }: LongevityModalProps) {
     onClose();
     setTimeout(() => {
       setName("");
+      setPhone("");
       setEmail("");
       setSubmitted(false);
+      setError(null);
     }, 300);
   };
 
@@ -81,12 +108,12 @@ export default function LongevityModal({ open, onClose }: LongevityModalProps) {
           {!submitted ? (
             <>
               <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed mb-6">
-                Get a personalized look at what's realistically possible in 3, 6, and 12 months — based on modern longevity science and your starting point.
+                Get a personalized look at what's realistically possible in 3, 6, and 12 months — based on modern longevity science and your starting point. We'll text you the PDF instantly.
               </p>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
                   <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
-                    Name
+                    Name <span style={{ color: "#00D4FF" }}>*</span>
                   </label>
                   <input
                     type="text"
@@ -100,25 +127,50 @@ export default function LongevityModal({ open, onClose }: LongevityModalProps) {
                 </div>
                 <div>
                   <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
-                    Email
+                    Phone <span style={{ color: "#00D4FF" }}>*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="(###) ###-####"
+                    required
+                    className="w-full placeholder-white/20 px-4 py-3 text-sm font-['Barlow'] outline-none"
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
+                    Email <span className="text-white/30 font-400 normal-case">(optional)</span>
                   </label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Your email address"
-                    required
                     className="w-full placeholder-white/20 px-4 py-3 text-sm font-['Barlow'] outline-none"
                     style={inputStyle}
                   />
                 </div>
-                <button type="submit" className="b20-btn-primary w-full mt-2">
-                  Send My Roadmap
+
+                {error && (
+                  <p className="text-red-400 text-xs font-['Barlow'] text-center">
+                    {error}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  className="b20-btn-primary w-full mt-2"
+                  disabled={loading}
+                  style={loading ? { opacity: 0.7, cursor: "not-allowed" } : {}}
+                >
+                  {loading ? "Sending…" : "Text Me the Roadmap"}
                 </button>
+
                 {/* Privacy notice */}
                 <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
-                  By submitting, you agree to be contacted by BODY20 East Cobb regarding your roadmap.
-                  Your information is encrypted in transit and will not be sold or shared with third parties.{" "}
+                  By submitting, you agree to receive a text from BODY20 East Cobb. Message & data rates may apply.{" "}
                   <a
                     href="https://www.body20.com/privacy-policy"
                     target="_blank"
@@ -140,10 +192,10 @@ export default function LongevityModal({ open, onClose }: LongevityModalProps) {
                 <span className="font-['Barlow_Condensed'] font-700 text-xl" style={{ color: "#00D4FF" }}>✓</span>
               </div>
               <h4 className="font-['Barlow_Condensed'] font-700 text-white text-xl uppercase mb-3">
-                Roadmap Sent
+                Roadmap Sent!
               </h4>
               <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed">
-                We've sent your Longevity Roadmap. When you're ready, the next step is simply coming in for the Assessment.
+                Check your texts — we've sent your Longevity Roadmap PDF. When you're ready, the next step is coming in for the Assessment.
               </p>
               <button onClick={handleClose} className="b20-btn-outline mt-6 text-sm">
                 Close
