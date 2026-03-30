@@ -52,7 +52,7 @@ async function startServer() {
       await client.messages.create({
         from: TWILIO_FROM_NUMBER,
         to: phone,
-        body: `Hi ${name ?? "there"}! Here's your BODY20 East Cobb Longevity Roadmap: ${ROADMAP_PDF_URL}\n\nReady to experience it in person? Book your $49 Assessment: https://app.clubready.com/JoinUs/13604/640909\n\nQuestions? Call us: 770-450-6127`,
+        body: `Hi ${name ?? "there"}! Congratulations! Your BODY20 Longevity Roadmap is ready for your review: ${ROADMAP_PDF_URL}\n\nTo see how BODY20 can be an integral part of this Roadmap, book your Assessment here: https://www.body20.com/location/east-cobb\n\nQuestions? Call us: 770-450-6127`,
       });
 
       // 2. Notify the STUDIO about the new lead
