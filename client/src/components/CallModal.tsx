@@ -1,11 +1,21 @@
 /*
  * CallModal — BODY20 East Cobb QR Landing Page
- * "Request a Call from the Studio" modal
- * Palette: deep navy bg, cyan accent, white text — matches lead magnet site
+ * ─────────────────────────────────────────────
+ * "Request a Callback from the Studio" modal
+ *
+ * When the visitor submits their name + phone, this component calls the
+ * tRPC mutation `leads.requestCallback` which sends an SMS via Twilio to
+ * the studio number (770-450-6127) with the visitor's details.
+ *
+ * For Ukrainian developers:
+ *   - Backend route: server/routers.ts → leads.requestCallback
+ *   - Twilio credentials: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER
+ *   - Studio recipient: +17704506127 (hardcoded in server/routers.ts)
  */
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 interface CallModalProps {
   open: boolean;
@@ -17,12 +27,25 @@ export default function CallModal({ open, onClose }: CallModalProps) {
   const [phone, setPhone] = useState("");
   const [bestTime, setBestTime] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  // tRPC mutation — sends SMS via Twilio to studio
+  const callbackMutation = trpc.leads.requestCallback.useMutation({
+    onSuccess: () => {
+      setSubmitted(true);
+      setErrorMsg("");
+    },
+    onError: (err) => {
+      setErrorMsg("Something went wrong. Please call us directly at 770-450-6127.");
+      console.error("[CallModal] Twilio error:", err);
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (name && phone) {
-      setSubmitted(true);
-    }
+    if (!name.trim() || !phone.trim()) return;
+    setErrorMsg("");
+    callbackMutation.mutate({ name: name.trim(), phone: phone.trim(), bestTime: bestTime || undefined });
   };
 
   const handleClose = () => {
@@ -32,6 +55,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
       setPhone("");
       setBestTime("");
       setSubmitted(false);
+      setErrorMsg("");
     }, 300);
   };
 
@@ -138,9 +162,20 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                   <option value="anytime" style={{ backgroundColor: "#1a2a3a" }}>Anytime</option>
                 </select>
               </div>
-              <button type="submit" className="b20-btn-primary w-full mt-2">
-                Request My Call
+
+              {/* Error message */}
+              {errorMsg && (
+                <p className="text-red-400 text-xs font-['Barlow'] text-center">{errorMsg}</p>
+              )}
+
+              <button
+                type="submit"
+                disabled={callbackMutation.isPending}
+                className="b20-btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {callbackMutation.isPending ? "Sending…" : "Request My Call"}
               </button>
+
               {/* Privacy notice */}
               <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
                 By submitting, you agree to be contacted by BODY20 East Cobb regarding your request.
@@ -168,7 +203,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                 Request Received
               </h4>
               <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed">
-                Thanks. Our studio team will reach out shortly.
+                Thanks, {name}! Our studio team will call you back at {phone} shortly.
               </p>
               <button onClick={handleClose} className="b20-btn-outline mt-6 text-sm">
                 Close

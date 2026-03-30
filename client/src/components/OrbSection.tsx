@@ -15,13 +15,21 @@
  *  iframe element to grant microphone + audio autoplay. An overlay intercepts the gesture
  *  before it reaches the iframe, so the widget never activates. The fix is to show the
  *  iframe immediately and guide the user to tap it directly.
+ *
+ * CALL US BUTTON:
+ *  On mobile: renders as a clickable tel: link so the phone dialer opens immediately.
+ *  On desktop: shows the number as plain text (no dialer needed on desktop).
+ *  Detection uses the CSS media query approach via a state set on mount.
  */
 
 import { useState, useEffect } from "react";
-import { CalendarCheck, PhoneCall, ChevronDown } from "lucide-react";
+import { CalendarCheck, ChevronDown } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
 const JEN_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-full-9ztsJ4NuhsCBGXzvmUxito.webp";
+
+const STUDIO_PHONE = "7704506127";
+const STUDIO_PHONE_DISPLAY = "770-450-6127";
 
 interface OrbSectionProps {
   onOrbTap: () => void;
@@ -33,13 +41,26 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
   const [visible, setVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
   const [hintDismissed, setHintDismissed] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Fade in page content
     const t1 = setTimeout(() => setVisible(true), 80);
     // Show hint arrow after 1.5s
     const t2 = setTimeout(() => setHintVisible(true), 1500);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
+
+    // Detect mobile for Call Us button behaviour
+    // Uses pointer:coarse as the most reliable mobile indicator
+    const mq = window.matchMedia("(pointer: coarse)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      mq.removeEventListener("change", handler);
+    };
   }, []);
 
   // Dismiss hint when user taps anywhere near the widget
@@ -189,7 +210,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             </div>
           </div>
 
-          {/* ── Hint label above widget ── */}
+          {/* ── Hint label above widget — LARGER FONT ── */}
           {!hintDismissed && (
             <div
               className="flex flex-col items-center gap-1 transition-all duration-500"
@@ -202,7 +223,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
                 className="font-['Barlow_Condensed'] font-bold uppercase tracking-wide"
                 style={{
                   color: "#00D4FF",
-                  fontSize: "0.95rem",
+                  fontSize: "1.35rem",   /* increased from 0.95rem */
                   animation: hintVisible ? "cta-pulse 2.2s ease-in-out infinite" : "none",
                 }}
               >
@@ -210,7 +231,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
               </p>
               {/* Bouncing arrow pointing down to the widget */}
               <ChevronDown
-                size={22}
+                size={26}
                 color="#00D4FF"
                 strokeWidth={2.5}
                 style={{ animation: hintVisible ? "bounce-down 1.2s ease-in-out infinite" : "none" }}
@@ -277,7 +298,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             transform: visible ? "translateY(0)" : "translateY(10px)",
           }}
         >
-          {/* Book Assessment — solid fill, large tap target */}
+          {/* Book Assessment — solid fill, large tap target, "Free" removed */}
           <button
             onClick={onBookAssessment}
             className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
@@ -289,12 +310,49 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             }}
           >
             <CalendarCheck size={16} strokeWidth={2.5} />
-            Book Free Assessment
+            Book Assessment
           </button>
 
-          {/* Call us — ghost style */}
-          <a
-            href="tel:+17704506127"
+          {/* ── Call Us — mobile: tel link, desktop: plain number display ── */}
+          {isMobile ? (
+            /* On mobile (touch device): tapping opens the phone dialer */
+            <a
+              href={`tel:+1${STUDIO_PHONE}`}
+              className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                color: "rgba(255,255,255,0.75)",
+                minHeight: "44px",
+              }}
+            >
+              {/* Phone icon inline SVG — no Skype, no external dependency */}
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.08 6.08l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              Call Us
+            </a>
+          ) : (
+            /* On desktop: show the number as plain text — no dialer needed */
+            <div
+              className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide"
+              style={{
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.18)",
+                color: "rgba(255,255,255,0.75)",
+                minHeight: "44px",
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6.08 6.08l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+              {STUDIO_PHONE_DISPLAY}
+            </div>
+          )}
+
+          {/* Request Callback — opens the CallModal with Twilio integration */}
+          <button
+            onClick={onRequestCall}
             className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
             style={{
               background: "rgba(255,255,255,0.05)",
@@ -303,9 +361,13 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
               minHeight: "44px",
             }}
           >
-            <PhoneCall size={15} strokeWidth={2} />
-            Call Us
-          </a>
+            {/* Callback icon */}
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="23 4 23 10 17 10"/>
+              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+            </svg>
+            Request Callback
+          </button>
         </div>
       </div>
     </section>
