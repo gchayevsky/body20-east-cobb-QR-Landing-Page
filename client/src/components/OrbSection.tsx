@@ -234,6 +234,19 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             <CalendarCheck size={11} strokeWidth={2.5} /> Book Assessment
           </button>
 
+          {/* Call Us — tel: link on mobile, styled button on desktop */}
+          <a
+            href="tel:7704506127"
+            className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95 no-underline"
+            style={{
+              background: "rgba(255,255,255,0.06)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              color: "rgba(255,255,255,0.8)",
+            }}
+          >
+            <PhoneCall size={11} strokeWidth={2.5} /> Call Us
+          </a>
+
           {/* Request a Call */}
           <button
             onClick={onRequestCall}
