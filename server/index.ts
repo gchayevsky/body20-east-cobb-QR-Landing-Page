@@ -8,8 +8,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ─── Twilio config ────────────────────────────────────────────────────────────
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID ?? "";
-const TWILIO_AUTH_TOKEN  = process.env.TWILIO_AUTH_TOKEN  ?? "";
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID ?? "AC7da31c1aca18a9fda8fbb734098d6e18";
+const TWILIO_AUTH_TOKEN  = process.env.TWILIO_AUTH_TOKEN  ?? "8c73e2ff5e88ce64ced124dd6af96cb4";
 const TWILIO_FROM_NUMBER = process.env.TWILIO_FROM_NUMBER ?? "+17708096357";
 const STUDIO_PHONE       = process.env.STUDIO_PHONE       ?? "+17704506127";
 
