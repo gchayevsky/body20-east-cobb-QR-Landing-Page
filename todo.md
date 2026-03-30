@@ -26,3 +26,4 @@
 - [x] Upgrade project to full-stack (web-db-user) for Twilio backend support
 - [x] Add Twilio SMS backend route (leads.requestCallback) — sends SMS to 770-450-6127
 - [x] Wire CallModal to real Twilio SMS via tRPC mutation
+- [x] Fix CallModal on mobile: submit button cut off, Best Time dropdown not scrollable

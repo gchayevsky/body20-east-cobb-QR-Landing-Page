@@ -3,6 +3,10 @@
  * ─────────────────────────────────────────────
  * "Request a Callback from the Studio" modal
  *
+ * Layout: fixed header + scrollable content area + sticky submit button
+ * This ensures the submit button is always visible on mobile screens
+ * regardless of screen height, and the Best Time dropdown is reachable.
+ *
  * When the visitor submits their name + phone, this component calls the
  * tRPC mutation `leads.requestCallback` which sends an SMS via Twilio to
  * the studio number (770-450-6127) with the visitor's details.
@@ -22,6 +26,13 @@ interface CallModalProps {
   onClose: () => void;
 }
 
+const TIME_OPTIONS = [
+  { value: "morning", label: "Morning (8am – 12pm)" },
+  { value: "afternoon", label: "Afternoon (12pm – 5pm)" },
+  { value: "evening", label: "Evening (5pm – 8pm)" },
+  { value: "anytime", label: "Anytime" },
+];
+
 export default function CallModal({ open, onClose }: CallModalProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,7 +40,6 @@ export default function CallModal({ open, onClose }: CallModalProps) {
   const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // tRPC mutation — sends SMS via Twilio to studio
   const callbackMutation = trpc.leads.requestCallback.useMutation({
     onSuccess: () => {
       setSubmitted(true);
@@ -45,7 +55,11 @@ export default function CallModal({ open, onClose }: CallModalProps) {
     e.preventDefault();
     if (!name.trim() || !phone.trim()) return;
     setErrorMsg("");
-    callbackMutation.mutate({ name: name.trim(), phone: phone.trim(), bestTime: bestTime || undefined });
+    callbackMutation.mutate({
+      name: name.trim(),
+      phone: phone.trim(),
+      bestTime: bestTime || undefined,
+    });
   };
 
   const handleClose = () => {
@@ -61,64 +75,85 @@ export default function CallModal({ open, onClose }: CallModalProps) {
 
   if (!open) return null;
 
-  const inputStyle = {
-    backgroundColor: "oklch(0.22 0.025 250)",
-    border: "1px solid rgba(0, 212, 255, 0.15)",
-    borderRadius: "8px",
+  const fieldBg = "oklch(0.22 0.025 250)";
+  const fieldBorder = "1px solid rgba(0, 212, 255, 0.2)";
+  const fieldStyle: React.CSSProperties = {
+    backgroundColor: fieldBg,
+    border: fieldBorder,
+    borderRadius: "10px",
     color: "#ffffff",
+    width: "100%",
+    padding: "14px 16px",
+    fontSize: "15px",
+    fontFamily: "'Barlow', sans-serif",
+    outline: "none",
+    WebkitAppearance: "none",
+    appearance: "none",
   };
-
-  const inputFocusStyle = "outline-none";
 
   return (
     <>
       {/* Backdrop */}
       <div
         className="fixed inset-0 z-50 backdrop-blur-sm"
-        style={{ backgroundColor: "oklch(0.10 0.02 250 / 0.85)" }}
+        style={{ backgroundColor: "rgba(5, 10, 20, 0.88)" }}
         onClick={handleClose}
       />
 
-      {/* Modal */}
+      {/* Modal — uses flex column so footer is always pinned */}
       <div
-        className="fixed z-50 w-full max-w-md mx-auto animate-fade-in-up"
+        className="fixed z-50 flex flex-col"
         style={{
           backgroundColor: "oklch(0.18 0.025 250)",
-          border: "1px solid rgba(0, 212, 255, 0.2)",
-          borderRadius: "12px",
-          top: "50%",
+          border: "1px solid rgba(0, 212, 255, 0.22)",
+          borderRadius: "16px",
+          /* Position: centred horizontally, anchored near bottom on mobile */
           left: "50%",
+          top: "50%",
           transform: "translate(-50%, -50%)",
-          maxHeight: "90vh",
-          overflowY: "auto",
+          width: "calc(100% - 32px)",
+          maxWidth: "440px",
+          /* Cap height so it never overflows viewport */
+          maxHeight: "calc(100dvh - 48px)",
+          overflow: "hidden",
         }}
+        onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* ── Sticky Header ── */}
         <div
-          className="flex items-center justify-between px-6 py-5"
+          className="flex items-center justify-between px-6 py-5 flex-shrink-0"
           style={{ borderBottom: "1px solid rgba(0, 212, 255, 0.12)" }}
         >
           <div>
-            <p className="b20-label mb-1">Studio Callback</p>
-            <h3 className="font-['Barlow_Condensed'] font-700 text-white text-xl uppercase tracking-wide">
+            <p
+              className="font-['Barlow'] font-semibold uppercase tracking-widest text-xs mb-1"
+              style={{ color: "#00D4FF" }}
+            >
+              Studio Callback
+            </p>
+            <h3 className="font-['Barlow_Condensed'] font-bold text-white text-xl uppercase tracking-wide">
               Request a Call
             </h3>
           </div>
           <button
             onClick={handleClose}
-            className="text-white/40 hover:text-white transition-colors p-1"
+            className="text-white/40 hover:text-white transition-colors p-1 rounded-full"
             aria-label="Close"
           >
-            <X size={18} />
+            <X size={20} />
           </button>
         </div>
 
-        {/* Content */}
-        <div className="px-6 py-6">
+        {/* ── Scrollable Body ── */}
+        <div className="flex-1 overflow-y-auto px-6 py-5" style={{ overscrollBehavior: "contain" }}>
           {!submitted ? (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-5">
+              {/* Name */}
               <div>
-                <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
+                <label
+                  className="block font-['Barlow'] font-semibold uppercase tracking-wide text-xs mb-2"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
+                >
                   Name
                 </label>
                 <input
@@ -127,12 +162,16 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your name"
                   required
-                  className={`w-full placeholder-white/20 px-4 py-3 text-sm font-['Barlow'] ${inputFocusStyle}`}
-                  style={inputStyle}
+                  style={fieldStyle}
                 />
               </div>
+
+              {/* Phone */}
               <div>
-                <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
+                <label
+                  className="block font-['Barlow'] font-semibold uppercase tracking-wide text-xs mb-2"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
+                >
                   Phone
                 </label>
                 <input
@@ -141,74 +180,118 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Your phone number"
                   required
-                  className={`w-full placeholder-white/20 px-4 py-3 text-sm font-['Barlow'] ${inputFocusStyle}`}
-                  style={inputStyle}
+                  style={fieldStyle}
                 />
               </div>
+
+              {/* Best Time — custom styled select with visible chevron */}
               <div>
-                <label className="block text-white/60 text-xs font-['Barlow'] font-600 uppercase tracking-wide mb-2">
+                <label
+                  className="block font-['Barlow'] font-semibold uppercase tracking-wide text-xs mb-2"
+                  style={{ color: "rgba(255,255,255,0.55)" }}
+                >
                   Best Time to Call
                 </label>
-                <select
-                  value={bestTime}
-                  onChange={(e) => setBestTime(e.target.value)}
-                  className={`w-full px-4 py-3 text-sm font-['Barlow'] appearance-none ${inputFocusStyle}`}
-                  style={inputStyle}
-                >
-                  <option value="" style={{ backgroundColor: "#1a2a3a" }}>Select a time</option>
-                  <option value="morning" style={{ backgroundColor: "#1a2a3a" }}>Morning (8am – 12pm)</option>
-                  <option value="afternoon" style={{ backgroundColor: "#1a2a3a" }}>Afternoon (12pm – 5pm)</option>
-                  <option value="evening" style={{ backgroundColor: "#1a2a3a" }}>Evening (5pm – 8pm)</option>
-                  <option value="anytime" style={{ backgroundColor: "#1a2a3a" }}>Anytime</option>
-                </select>
+                <div className="relative">
+                  <select
+                    value={bestTime}
+                    onChange={(e) => setBestTime(e.target.value)}
+                    style={{ ...fieldStyle, paddingRight: "40px", cursor: "pointer" }}
+                  >
+                    <option value="" style={{ backgroundColor: "#1a2535" }}>
+                      Select a time…
+                    </option>
+                    {TIME_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value} style={{ backgroundColor: "#1a2535" }}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Dropdown chevron */}
+                  <div
+                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2"
+                    style={{ color: "#00D4FF" }}
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </div>
+                </div>
               </div>
 
-              {/* Error message */}
+              {/* Error */}
               {errorMsg && (
                 <p className="text-red-400 text-xs font-['Barlow'] text-center">{errorMsg}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={callbackMutation.isPending}
-                className="b20-btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                {callbackMutation.isPending ? "Sending…" : "Request My Call"}
-              </button>
-
-              {/* Privacy notice */}
-              <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
-                By submitting, you agree to be contacted by BODY20 East Cobb regarding your request.
-                Your information is encrypted in transit and will not be sold or shared with third parties.{" "}
+              {/* Privacy */}
+              <p className="text-xs font-['Barlow'] text-center leading-relaxed" style={{ color: "rgba(255,255,255,0.25)" }}>
+                By submitting, you agree to be contacted by BODY20 East Cobb.{" "}
                 <a
                   href="https://www.body20.com/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline hover:text-white/50 transition-colors"
-                  style={{ color: "rgba(0,212,255,0.5)" }}
+                  style={{ color: "rgba(0,212,255,0.5)", textDecoration: "underline" }}
                 >
                   Privacy Policy
                 </a>
               </p>
-            </form>
+            </div>
           ) : (
-            <div className="text-center py-6 animate-fade-in-up">
+            /* Success state */
+            <div className="text-center py-8">
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4"
-                style={{ border: "1px solid #00D4FF", backgroundColor: "rgba(0, 212, 255, 0.1)" }}
+                className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-5"
+                style={{ border: "2px solid #00D4FF", backgroundColor: "rgba(0,212,255,0.1)" }}
               >
-                <span className="font-['Barlow_Condensed'] font-700 text-xl" style={{ color: "#00D4FF" }}>✓</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00D4FF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
               </div>
-              <h4 className="font-['Barlow_Condensed'] font-700 text-white text-xl uppercase mb-3">
+              <h4 className="font-['Barlow_Condensed'] font-bold text-white text-2xl uppercase mb-3">
                 Request Received
               </h4>
-              <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed">
+              <p className="font-['Barlow'] text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
                 Thanks, {name}! Our studio team will call you back at {phone} shortly.
               </p>
-              <button onClick={handleClose} className="b20-btn-outline mt-6 text-sm">
-                Close
-              </button>
             </div>
+          )}
+        </div>
+
+        {/* ── Sticky Footer — submit button always visible ── */}
+        <div
+          className="flex-shrink-0 px-6 pb-6 pt-4"
+          style={{ borderTop: "1px solid rgba(0,212,255,0.1)" }}
+        >
+          {!submitted ? (
+            <button
+              onClick={handleSubmit}
+              disabled={callbackMutation.isPending || !name.trim() || !phone.trim()}
+              className="w-full font-['Barlow'] font-bold uppercase tracking-wide text-sm rounded-full transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: "#00D4FF",
+                color: "#0a0f1e",
+                padding: "16px 24px",
+                fontSize: "15px",
+                minHeight: "52px",
+              }}
+            >
+              {callbackMutation.isPending ? "Sending…" : "Request My Call"}
+            </button>
+          ) : (
+            <button
+              onClick={handleClose}
+              className="w-full font-['Barlow'] font-bold uppercase tracking-wide text-sm rounded-full transition-all duration-200 active:scale-95"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "rgba(255,255,255,0.8)",
+                padding: "16px 24px",
+                minHeight: "52px",
+              }}
+            >
+              Close
+            </button>
           )}
         </div>
       </div>
