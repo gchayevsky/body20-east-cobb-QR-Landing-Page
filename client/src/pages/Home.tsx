@@ -17,6 +17,7 @@ import BookingSection from "@/components/BookingSection";
 import LongevitySection from "@/components/LongevitySection";
 import StickyBookingBar from "@/components/StickyBookingBar";
 import CallModal from "@/components/CallModal";
+import JenChat from "@/components/JenChat";
 import LongevityModal from "@/components/LongevityModal";
 import CalendarModal from "@/components/CalendarModal";
 import Footer from "@/components/Footer";
@@ -24,6 +25,7 @@ import Footer from "@/components/Footer";
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(false);
   const [callModalOpen, setCallModalOpen] = useState(false);
+  const [jenChatOpen, setJenChatOpen] = useState(false);
   const [longevityModalOpen, setLongevityModalOpen] = useState(false);
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
 
@@ -52,6 +54,13 @@ export default function Home() {
         onOrbTap={() => setChatOpen(true)}
         onRequestCall={() => setCallModalOpen(true)}
         onBookAssessment={openBooking}
+        onChatWithJen={() => setJenChatOpen(true)}
+      />
+
+      {/* Jen AI Text Chat — full-screen chat panel with LLM responses and SMS transcript */}
+      <JenChat
+        open={jenChatOpen}
+        onClose={() => setJenChatOpen(false)}
       />
 
       {/* Chat Panel — slides in when orb is tapped */}

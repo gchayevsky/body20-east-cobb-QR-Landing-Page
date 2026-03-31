@@ -27,3 +27,9 @@
 - [x] Add Twilio SMS backend route (leads.requestCallback) — sends SMS to 770-450-6127
 - [x] Wire CallModal to real Twilio SMS via tRPC mutation
 - [x] Fix CallModal on mobile: submit button cut off, Best Time dropdown not scrollable
+
+## Chat with Jen Feature
+- [x] Database schema: chat_sessions and chat_messages tables
+- [x] Backend tRPC routes: chat.start, chat.sendMessage (LLM), chat.end, chat.sendTranscript (Twilio SMS)
+- [x] JenChat frontend component: branded chat panel with Jen portrait, message bubbles, SMS transcript option
+- [x] Wire Chat with Jen button into OrbSection between speak button and booking buttons

@@ -23,7 +23,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { CalendarCheck, ChevronDown } from "lucide-react";
+import { CalendarCheck, ChevronDown, MessageSquare } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
 const JEN_FULL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-full-9ztsJ4NuhsCBGXzvmUxito.webp";
@@ -35,9 +35,10 @@ interface OrbSectionProps {
   onOrbTap: () => void;
   onRequestCall: () => void;
   onBookAssessment: () => void;
+  onChatWithJen: () => void;
 }
 
-export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }: OrbSectionProps) {
+export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment, onChatWithJen }: OrbSectionProps) {
   const [visible, setVisible] = useState(false);
   const [hintVisible, setHintVisible] = useState(false);
   const [hintDismissed, setHintDismissed] = useState(false);
@@ -298,6 +299,22 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             transform: visible ? "translateY(0)" : "translateY(10px)",
           }}
         >
+          {/* Chat with Jen — opens the in-app AI text chat panel */}
+          <button
+            onClick={onChatWithJen}
+            className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95 w-full justify-center"
+            style={{
+              background: "rgba(0,212,255,0.12)",
+              border: "1.5px solid rgba(0,212,255,0.45)",
+              color: "#00D4FF",
+              minHeight: "48px",
+              marginBottom: "4px",
+            }}
+          >
+            <MessageSquare size={16} strokeWidth={2.5} />
+            Chat with Jen
+          </button>
+
           {/* Book Assessment — solid fill, large tap target, "Free" removed */}
           <button
             onClick={onBookAssessment}
