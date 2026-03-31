@@ -35,3 +35,4 @@
 - [x] Wire Chat with Jen button into OrbSection between speak button and booking buttons
 - [x] Fix Chat with Jen button placement — move closer to widget for better visual symmetry
 - [x] Build /admin/chats transcript viewer: session list + full message thread view, password-protected
+- [x] Replace placeholder JEN_SYSTEM_PROMPT with full Centerfy prompt + Chat Optimization Layer v1.0
