@@ -292,7 +292,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment, 
 
         {/* ── Secondary control chips ── */}
         <div
-          className="w-full flex flex-col items-center gap-3 mt-4 transition-all duration-700"
+          className="w-full flex flex-col items-center gap-3 mt-1 transition-all duration-700"
           style={{
             transitionDelay: "0.45s",
             opacity: visible ? 1 : 0,
