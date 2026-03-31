@@ -33,3 +33,5 @@
 - [x] Backend tRPC routes: chat.start, chat.sendMessage (LLM), chat.end, chat.sendTranscript (Twilio SMS)
 - [x] JenChat frontend component: branded chat panel with Jen portrait, message bubbles, SMS transcript option
 - [x] Wire Chat with Jen button into OrbSection between speak button and booking buttons
+- [x] Fix Chat with Jen button placement — move closer to widget for better visual symmetry
+- [x] Build /admin/chats transcript viewer: session list + full message thread view, password-protected

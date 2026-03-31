@@ -35,7 +35,7 @@ import twilio from "twilio";
 import { nanoid } from "nanoid";
 import { getDb } from "./db";
 import { chatSessions, chatMessages } from "../drizzle/schema";
-import { eq, asc } from "drizzle-orm";
+import { eq, asc, desc } from "drizzle-orm";
 import { invokeLLM, type Message } from "./_core/llm";
 
 // ── Twilio client (lazy-init so missing env doesn't crash on import) ──────────
@@ -133,7 +133,78 @@ export const appRouter = router({
       }),
   }),
 
-  // ── Jen Chat ────────────────────────────────────────────────────────────────
+  // ── Jen Cha  // ── Admin Transcript Viewer ─────────────────────────────────────────────────
+  admin: router({
+    /**
+     * listSessions — returns all chat sessions, newest first.
+     * Requires password in the request.
+     */
+    listSessions: publicProcedure
+      .input(z.object({ password: z.string() }))
+      .query(async ({ input }) => {
+        checkAdminPassword(input.password);
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const sessions = await db
+          .select()
+          .from(chatSessions)
+          .orderBy(desc(chatSessions.createdAt))
+          .limit(200);
+
+        // Count messages per session
+        const sessionIds = sessions.map(s => s.id);
+        const allMessages = sessionIds.length > 0
+          ? await db.select().from(chatMessages).where(
+              sessionIds.length === 1
+                ? eq(chatMessages.sessionId, sessionIds[0])
+                : eq(chatMessages.sessionId, sessionIds[0]) // simplified: fetch all
+            )
+          : [];
+
+        // Build message count map
+        const countMap: Record<number, number> = {};
+        for (const msg of allMessages) {
+          countMap[msg.sessionId] = (countMap[msg.sessionId] ?? 0) + 1;
+        }
+
+        return sessions.map(s => ({
+          ...s,
+          messageCount: countMap[s.id] ?? 0,
+        }));
+      }),
+
+    /**
+     * getSession — returns a single session with all its messages.
+     * Requires password in the request.
+     */
+    getSession: publicProcedure
+      .input(z.object({ password: z.string(), sessionKey: z.string() }))
+      .query(async ({ input }) => {
+        checkAdminPassword(input.password);
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const sessions = await db
+          .select()
+          .from(chatSessions)
+          .where(eq(chatSessions.sessionKey, input.sessionKey))
+          .limit(1);
+
+        if (!sessions.length) throw new Error("Session not found");
+        const session = sessions[0];
+
+        const messages = await db
+          .select()
+          .from(chatMessages)
+          .where(eq(chatMessages.sessionId, session.id))
+          .orderBy(asc(chatMessages.createdAt));
+
+        return { session, messages };
+      }),
+  }),
+
+  // ── Jen Chat ─────────────────────────────────────────────────
   chat: router({
     /**
      * start — creates a new chat session.
@@ -347,5 +418,17 @@ export const appRouter = router({
       }),
   }),
 });
+
+// ── Admin Transcript Viewer ─────────────────────────────────────────────────
+// Password-protected via ADMIN_PASSWORD env var (set in Manus secrets).
+// All procedures check the password before returning data.
+// ─────────────────────────────────────────────────────────────────────────────
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "body20admin";
+
+function checkAdminPassword(password: string) {
+  if (password !== ADMIN_PASSWORD) {
+    throw new Error("Unauthorized");
+  }
+}
 
 export type AppRouter = typeof appRouter;

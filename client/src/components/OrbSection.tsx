@@ -292,28 +292,31 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment, 
 
         {/* ── Secondary control chips ── */}
         <div
-          className="flex flex-wrap items-center justify-center gap-3 mt-7 transition-all duration-700"
+          className="w-full flex flex-col items-center gap-3 mt-4 transition-all duration-700"
           style={{
             transitionDelay: "0.45s",
             opacity: visible ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(10px)",
+            maxWidth: "clamp(280px, 88vw, 400px)",
           }}
         >
-          {/* Chat with Jen — opens the in-app AI text chat panel */}
+          {/* Chat with Jen — full width, directly under widget, cyan outlined */}
           <button
             onClick={onChatWithJen}
-            className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95 w-full justify-center"
+            className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
             style={{
-              background: "rgba(0,212,255,0.12)",
-              border: "1.5px solid rgba(0,212,255,0.45)",
+              background: "rgba(0,212,255,0.10)",
+              border: "1.5px solid rgba(0,212,255,0.50)",
               color: "#00D4FF",
               minHeight: "48px",
-              marginBottom: "4px",
             }}
           >
             <MessageSquare size={16} strokeWidth={2.5} />
             Chat with Jen
           </button>
+
+          {/* Row: Book Assessment + Call Us side by side */}
+          <div className="flex items-center justify-center gap-3 w-full">
 
           {/* Book Assessment — solid fill, large tap target, "Free" removed */}
           <button
@@ -367,14 +370,16 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment, 
             </div>
           )}
 
-          {/* Request Callback — opens the CallModal with Twilio integration */}
+          </div>{/* end Book + Call row */}
+
+          {/* Request Callback — full width, opens the CallModal with Twilio integration */}
           <button
             onClick={onRequestCall}
-            className="flex items-center gap-2 px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
+            className="flex items-center justify-center gap-2 w-full px-5 py-3 rounded-full font-['Barlow'] font-semibold text-sm uppercase tracking-wide transition-all duration-200 active:scale-95"
             style={{
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.18)",
-              color: "rgba(255,255,255,0.75)",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "rgba(255,255,255,0.70)",
               minHeight: "44px",
             }}
           >
