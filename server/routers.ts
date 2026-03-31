@@ -8,7 +8,7 @@
  *   chat.start                 — creates a new chat session, returns sessionKey
  *   chat.sendMessage           — sends a visitor message, gets Jen's LLM response, saves both
  *   chat.end                   — marks session as ended
- *   chat.sendTranscript        — sends full conversation transcript to visitor via Twilio SMS
+ *   chat.sendTranscript        — generates a PDF transcript, uploads to S3, sends visitor a short SMS with the link
  *
  * ── For Ukrainian developers ──────────────────────────────────────────────────
  * All chat procedures are public (no auth required).
@@ -37,6 +37,8 @@ import { getDb } from "./db";
 import { chatSessions, chatMessages } from "../drizzle/schema";
 import { eq, asc, desc } from "drizzle-orm";
 import { invokeLLM, type Message } from "./_core/llm";
+import PDFDocument from "pdfkit";
+import { storagePut } from "./storage";
 
 // ── Twilio client (lazy-init so missing env doesn't crash on import) ──────────
 function getTwilioClient() {
@@ -414,12 +416,11 @@ export const appRouter = router({
       }),
 
     /**
-     * sendTranscript — sends the full conversation as an SMS to the visitor.
-     * Called when visitor taps "Text me this conversation."
-     * Also saves their phone number to the session record.
+     * sendTranscript — generates a PDF of the conversation, uploads it to S3,
+     * and sends the visitor a single short SMS with the PDF download link.
      *
-     * SMS format: clean numbered list of exchanges, not raw JSON.
-     * Long transcripts are chunked into multiple SMS messages (Twilio handles splitting).
+     * This avoids the Twilio 1600-char limit that breaks long transcripts.
+     * The PDF is stored permanently in S3 and is accessible via a direct URL.
      */
     sendTranscript: publicProcedure
       .input(
@@ -454,22 +455,86 @@ export const appRouter = router({
           return { success: false, reason: "No messages to send" };
         }
 
-        // Build clean transcript text
-        const lines: string[] = [
-          "💬 Your chat with Jen — BODY20 East Cobb",
-          "─────────────────",
-        ];
-        for (const msg of messages) {
-          const label = msg.role === "user" ? "You" : "Jen";
-          lines.push(`${label}: ${msg.content}`);
-        }
-        lines.push("─────────────────");
-        lines.push("Book your assessment: body20.com/location/east-cobb");
-        lines.push("Questions? Call us: 770-450-6127");
+        // ── Build PDF transcript ────────────────────────────────────────────────
+        const pdfBuffer = await new Promise<Buffer>((resolve, reject) => {
+          const doc = new PDFDocument({ margin: 50, size: "LETTER" });
+          const buffers: Buffer[] = [];
+          doc.on("data", (chunk: Buffer) => buffers.push(chunk));
+          doc.on("end", () => resolve(Buffer.concat(buffers)));
+          doc.on("error", reject);
 
-        const transcriptText = lines.join("\n");
+          // Header
+          doc
+            .fontSize(18)
+            .fillColor("#E31837")
+            .text("BODY20 East Cobb", { align: "center" })
+            .moveDown(0.3);
+          doc
+            .fontSize(13)
+            .fillColor("#111111")
+            .text("Chat Transcript with Jen", { align: "center" })
+            .moveDown(0.3);
+          const dateStr = new Date().toLocaleString("en-US", {
+            timeZone: "America/New_York",
+            dateStyle: "medium",
+            timeStyle: "short",
+          });
+          doc
+            .fontSize(9)
+            .fillColor("#666666")
+            .text(dateStr, { align: "center" })
+            .moveDown(1);
 
-        // Normalize phone number — add +1 if US number without country code
+          // Divider
+          doc
+            .moveTo(50, doc.y)
+            .lineTo(562, doc.y)
+            .strokeColor("#E31837")
+            .lineWidth(1)
+            .stroke()
+            .moveDown(0.8);
+
+          // Messages
+          for (const msg of messages) {
+            const isUser = msg.role === "user";
+            const label = isUser ? "You" : "Jen";
+            const labelColor = isUser ? "#111111" : "#E31837";
+
+            doc
+              .fontSize(10)
+              .fillColor(labelColor)
+              .text(label + ":", { continued: false })
+              .moveDown(0.1);
+            doc
+              .fontSize(10)
+              .fillColor("#222222")
+              .text(msg.content ?? "", { indent: 16 })
+              .moveDown(0.6);
+          }
+
+          // Footer
+          doc.moveDown(0.5);
+          doc
+            .moveTo(50, doc.y)
+            .lineTo(562, doc.y)
+            .strokeColor("#cccccc")
+            .lineWidth(0.5)
+            .stroke()
+            .moveDown(0.8);
+          doc
+            .fontSize(9)
+            .fillColor("#666666")
+            .text("Book your assessment: body20.com/location/east-cobb", { align: "center" })
+            .text("Questions? Call us: 770-450-6127", { align: "center" });
+
+          doc.end();
+        });
+
+        // ── Upload PDF to S3 ───────────────────────────────────────────────────
+        const fileKey = `transcripts/${sessionKey}-${Date.now()}.pdf`;
+        const { url: pdfUrl } = await storagePut(fileKey, pdfBuffer, "application/pdf");
+
+        // ── Normalize phone & send single short SMS ────────────────────────────
         const normalizedPhone = phone.replace(/\D/g, "");
         const toPhone = normalizedPhone.startsWith("1")
           ? `+${normalizedPhone}`
@@ -480,17 +545,17 @@ export const appRouter = router({
 
         const client = getTwilioClient();
 
-        // Send transcript SMS to visitor
+        // Single SMS — well under the 1600-char limit
         await client.messages.create({
-          body: transcriptText,
+          body: `BODY20 East Cobb — Your chat transcript with Jen is ready:\n${pdfUrl}\n\nBook your assessment: body20.com/location/east-cobb`,
           from: fromNumber,
           to: toPhone,
         });
 
-        // Also notify studio that a chat transcript was requested (lead capture signal)
+        // Notify studio (lead capture signal)
         const visitorName = session.visitorName ?? "Unknown visitor";
         await client.messages.create({
-          body: `💬 BODY20 East Cobb — Chat Transcript Requested\nVisitor: ${visitorName}\nPhone: ${phone}\nTranscript sent to visitor.`,
+          body: `BODY20 East Cobb — Chat Transcript Requested\nVisitor: ${visitorName}\nPhone: ${phone}\nPDF: ${pdfUrl}`,
           from: fromNumber,
           to: STUDIO_PHONE,
         });
@@ -501,7 +566,7 @@ export const appRouter = router({
           .set({ visitorPhone: phone, transcriptSent: 1 })
           .where(eq(chatSessions.sessionKey, sessionKey));
 
-        return { success: true };
+        return { success: true, pdfUrl };
       }),
   }),
 });

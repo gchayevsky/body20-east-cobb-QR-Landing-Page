@@ -39,3 +39,4 @@
 - [x] Add SMS transcript request button and phone number input flow to JenChat component
 - [x] Add persistent Get Transcript button to JenChat header (always visible, toggles transcript form)
 - [x] Reduce gap between green orb widget and Chat with Jen button in OrbSection
+- [ ] Fix SMS transcript: generate PDF, upload to S3, send single SMS with link (replaces multi-SMS approach)
