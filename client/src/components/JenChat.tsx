@@ -22,7 +22,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
-import { X, Send, MessageSquare, Phone } from "lucide-react";
+import { X, Send, MessageSquare, Phone, FileText } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 // Jen's portrait — same image used in OrbSection hero
@@ -221,6 +221,21 @@ export default function JenChat({ open, onClose }: JenChatProps) {
               BODY20 East Cobb AI Guide · Online
             </p>
           </div>
+          {/* Persistent Get Transcript button — always visible in header */}
+          <button
+            onClick={() => setShowTranscriptForm(prev => !prev)}
+            className="flex items-center gap-1.5 font-['Barlow'] text-xs font-semibold uppercase tracking-wide px-3 py-1.5 rounded-full flex-shrink-0 transition-all"
+            style={{
+              border: "1px solid rgba(0, 212, 255, 0.35)",
+              color: showTranscriptForm ? "#0a0f1e" : "rgba(0, 212, 255, 0.85)",
+              backgroundColor: showTranscriptForm ? "#00D4FF" : "transparent",
+            }}
+            title="Get a text copy of this conversation"
+          >
+            <FileText size={12} />
+            <span className="hidden sm:inline">Transcript</span>
+          </button>
+
           <button
             onClick={handleClose}
             className="text-white/40 hover:text-white transition-colors p-1 rounded-full flex-shrink-0"

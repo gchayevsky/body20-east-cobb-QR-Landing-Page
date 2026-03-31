@@ -36,3 +36,5 @@
 - [x] Fix Chat with Jen button placement — move closer to widget for better visual symmetry
 - [x] Build /admin/chats transcript viewer: session list + full message thread view, password-protected
 - [x] Replace placeholder JEN_SYSTEM_PROMPT with full Centerfy prompt + Chat Optimization Layer v1.0
+- [x] Add SMS transcript request button and phone number input flow to JenChat component
+- [x] Add persistent Get Transcript button to JenChat header (always visible, toggles transcript form)
