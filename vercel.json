@@ -1,0 +1,11 @@
+{
+  "buildCommand": "vite build",
+  "outputDirectory": "dist/public",
+  "installCommand": "pnpm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/send-roadmap-sms", "destination": "/api/send-roadmap-sms" },
+    { "source": "/api/send-callback-sms", "destination": "/api/send-callback-sms" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
