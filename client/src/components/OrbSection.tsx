@@ -176,7 +176,21 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             </div>
           </div>
 
-          {/* Primary CTA — pulsing glow draws the eye */}
+          {/* iframes.ai green orb — voice widget */}
+          <p className="text-white/40 font-['Barlow'] text-xs uppercase tracking-widest">
+            Tap the green button to speak with Jen
+          </p>
+          <div className="w-full" style={{ maxWidth: "clamp(280px, 88vw, 400px)" }}>
+            <iframe
+              src="https://iframes.ai/o/1772634390258x895947552529842200?color=10A37F&icon=activity"
+              allow="microphone"
+              id="assistantFrame"
+              title="Speak with Jen — BODY20 AI Guide"
+              style={{ width: "100%", height: "200px", border: "none", borderRadius: "16px", display: "block" }}
+            />
+          </div>
+
+          {/* Chat with Jen CTA */}
           <button
             onClick={onOrbTap}
             className="flex items-center gap-2 px-8 py-3 rounded-full font-['Barlow'] font-bold text-sm uppercase tracking-widest transition-all duration-200 hover:scale-105 active:scale-95"
@@ -184,17 +198,11 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
               background: "linear-gradient(135deg, #00D4FF 0%, #00b8d9 100%)",
               color: "#0a0f1e",
               boxShadow: "0 0 24px rgba(0,212,255,0.35)",
-              animation: paused ? "none" : "cta-pulse 2.4s ease-in-out infinite",
             }}
           >
             <MessageSquare size={14} strokeWidth={2.5} />
-            Speak with Jen
+            Chat with Jen
           </button>
-
-          {/* Hint text */}
-          <p className="text-white/30 font-['Barlow'] text-xs">
-            Tap to start — voice or text
-          </p>
         </div>
 
         {/* ── Secondary control chips ── */}
