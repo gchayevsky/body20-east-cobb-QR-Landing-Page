@@ -1,5 +1,6 @@
 /*
- * CallModal — BODY20 East Cobb QR Landing Page
+ * CallModal — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  * "Request a Call from the Studio" modal
  * Palette: deep navy bg, cyan accent, white text — matches lead magnet site
  *
@@ -8,6 +9,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
+import { STUDIO } from "../studio.config";
 
 interface CallModalProps {
   open: boolean;
@@ -185,7 +187,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
 
               {/* Privacy notice */}
               <p className="text-white/25 text-xs font-['Barlow'] text-center mt-4 leading-relaxed">
-                By submitting, you agree to be contacted by BODY20 East Cobb regarding your request.
+                By submitting, you agree to be contacted by {STUDIO.fullName} regarding your request.
                 Message & data rates may apply.{" "}
                 <a
                   href="https://www.body20.com/privacy-policy"
@@ -210,7 +212,7 @@ export default function CallModal({ open, onClose }: CallModalProps) {
                 Request Received
               </h4>
               <p className="text-white/60 font-['Barlow'] text-sm leading-relaxed">
-                Thanks. Our studio team will reach out shortly. Or call us directly: 770-450-6127.
+                Thanks. Our studio team will reach out shortly. Or call us directly: {STUDIO.phone}.
               </p>
               <button onClick={handleClose} className="b20-btn-outline mt-6 text-sm">
                 Close

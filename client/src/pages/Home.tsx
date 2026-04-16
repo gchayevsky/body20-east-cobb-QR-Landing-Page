@@ -1,11 +1,13 @@
 /*
- * BODY20 East Cobb — QR Landing Page — Home
+ * BODY20 QR Landing Page — Home (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  * Design: Corporate Athletic Minimalism
  * Colors: Deep navy bg, Cyan #00D4FF accent, White text — matches lead magnet site
  * Fonts: Barlow Condensed (headlines), Barlow (body)
  */
 
 import { useState, useRef } from "react";
+import { STUDIO } from "@/studio.config";
 import Header from "@/components/Header";
 import OrbSection from "@/components/OrbSection";
 import ChatPanel from "@/components/ChatPanel";
@@ -29,7 +31,7 @@ export default function Home() {
 
   const bookingRef = useRef<HTMLDivElement>(null);
 
-  const BOOKING_URL = "https://www.body20.com/location/east-cobb";
+  const BOOKING_URL = STUDIO.bookingUrl;
 
   const openBooking = () => {
     window.open(BOOKING_URL, "_blank", "noopener,noreferrer");

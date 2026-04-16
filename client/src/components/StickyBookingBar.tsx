@@ -1,8 +1,8 @@
 /*
- * StickyBookingBar — BODY20 East Cobb QR Landing Page
- * Fixed bottom bar: deep navy bg, cyan-green CTA button, white text
- * Matches lead magnet site palette
+ * StickyBookingBar — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  */
+import { STUDIO } from "../studio.config";
 
 interface StickyBookingBarProps {
   onBook: () => void;
@@ -20,7 +20,7 @@ export default function StickyBookingBar({ onBook }: StickyBookingBarProps) {
       <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
         <div className="hidden sm:block">
           <p className="text-white/50 text-xs font-['Barlow'] uppercase tracking-wide">
-            BODY20 East Cobb
+            {STUDIO.fullName}
           </p>
         </div>
         <div className="flex items-center gap-4 ml-auto">

@@ -1,11 +1,10 @@
 /*
- * OrbSection — BODY20 East Cobb QR Landing Page
- * Hero: single centered Jen portrait — clean, human, on-brand
- * Palette: deep navy bg, cyan #00D4FF accent, white text
- * Jen auto-starts speaking on load. Tap her portrait or "Speak with Jen" to open chat.
+ * OrbSection — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  */
 
 import { useState, useEffect } from "react";
+import { STUDIO } from "../studio.config";
 import { Pause, Play, MessageSquare, CalendarCheck, PhoneCall } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-hero-bg-n9nwdLwf3iGS2b3y4SuW5X.webp";
@@ -59,7 +58,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             transform: visible ? "translateY(0)" : "translateY(12px)",
           }}
         >
-          BODY20 East Cobb
+          {STUDIO.fullName}
         </p>
 
         {/* Headline */}
@@ -86,7 +85,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
             transform: visible ? "translateY(0)" : "translateY(12px)",
           }}
         >
-          Personalized neuromuscular training — right here in East Cobb.
+          {STUDIO.heroTagline}
         </p>
 
         {/* ── Meet Jen headline ── */}
@@ -182,7 +181,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
           </p>
           <div className="w-full" style={{ maxWidth: "clamp(280px, 88vw, 400px)" }}>
             <iframe
-              src="https://iframes.ai/o/1772634390258x895947552529842200?color=10A37F&icon=activity"
+              src={STUDIO.jenEmbedUrl}
               allow="microphone"
               id="assistantFrame"
               title="Speak with Jen — BODY20 AI Guide"
@@ -244,7 +243,7 @@ export default function OrbSection({ onOrbTap, onRequestCall, onBookAssessment }
 
           {/* Call Us — tel: link on mobile, styled button on desktop */}
           <a
-            href="tel:7704506127"
+            href={`tel:${STUDIO.phoneTel}`}
             className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-['Barlow'] font-semibold tracking-wide uppercase transition-all duration-200 hover:scale-105 active:scale-95 no-underline"
             style={{
               background: "rgba(255,255,255,0.06)",

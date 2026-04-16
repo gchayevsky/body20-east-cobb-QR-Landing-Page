@@ -1,5 +1,6 @@
 /*
- * ChatPanel — BODY20 East Cobb QR Landing Page
+ * ChatPanel — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  * Jen AI Assistant chat interface
  * Palette: deep navy bg, cyan #00D4FF accent, white text
  *
@@ -21,7 +22,7 @@
  *   const res = await fetch(import.meta.env.VITE_JEN_AGENT_API_URL, {
  *     method: 'POST',
  *     headers: { 'Content-Type': 'application/json' },
- *     body: JSON.stringify({ message: userInput, sessionId, studioId: 'body20-east-cobb' })
+ *     body: JSON.stringify({ message: userInput, sessionId, studioId: STUDIO.studioId })
  *   });
  *   const data = await res.json();
  *   setMessages(prev => [...prev, { id: Date.now(), from: 'jen', text: data.reply }]);
@@ -37,6 +38,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Send } from "lucide-react";
 import { nanoid } from "nanoid";
+import { STUDIO } from "../studio.config";
 
 // Jen's avatar — AI-generated image in BODY20 gear
 const JEN_AVATAR = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/jen-avatar-5V83tZpAMPrgJJnm3mBiCp.webp";
@@ -59,7 +61,7 @@ interface Message {
 const SCRIPTED_INTRO: { text: string; from: "jen" | "user"; delay: number }[] = [
   {
     from: "jen",
-    text: "Hey — I'm Jen with BODY20 East Cobb. You just scanned our window. We're not a traditional gym — we deliver personalized 20-minute strength, endurance, and recovery sessions using advanced EMS technology. What caught your attention?",
+    text: STUDIO.jenGreeting,
     delay: 600,
   },
   {
@@ -157,7 +159,7 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
   //   const res = await fetch(import.meta.env.VITE_JEN_AGENT_API_URL, {
   //     method: 'POST',
   //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ message: userInput, sessionId, studioId: 'body20-east-cobb' })
+  //     body: JSON.stringify({ message: userInput, sessionId, studioId: STUDIO.studioId })
   //   });
   //   const data = await res.json();
   //   setIsTyping(false);
@@ -241,7 +243,7 @@ export default function ChatPanel({ open, onClose, onBookAssessment }: ChatPanel
                   style={{ backgroundColor: "#00D4FF" }}
                 />
               </div>
-              <p className="text-white/40 text-xs font-['Barlow']">BODY20 East Cobb · AI Assistant</p>
+              <p className="text-white/40 text-xs font-['Barlow']">{STUDIO.jenFooterLabel}</p>
             </div>
           </div>
           <button

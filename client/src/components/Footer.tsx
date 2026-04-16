@@ -1,9 +1,8 @@
 /*
- * Footer — BODY20 East Cobb QR Landing Page
- * Minimal: studio info, phone, address, legal links
- * Palette: deep navy bg, cyan accent, white/gray text — matches lead magnet site
- * Official corporate legal URLs sourced from body20.com footer (March 2026)
+ * Footer — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  */
+import { STUDIO } from "../studio.config";
 
 const PRIVACY_URL = "https://www.body20.com/privacy-policy?hsLang=en";
 const TERMS_URL = "https://www.body20.com/terms?hsLang=en";
@@ -24,7 +23,7 @@ export default function Footer() {
           <div>
             <div className="font-['Barlow_Condensed'] font-800 text-white text-xl uppercase tracking-tight mb-1">
               BODY<span style={{ color: "#00D4FF" }}>20</span>{" "}
-              <span className="text-white/40 font-400 text-base">East Cobb</span>
+              <span className="text-white/40 font-400 text-base">{STUDIO.name}</span>
             </div>
             <p className="text-white/30 text-xs font-['Barlow']">
               Prescription-based EMS training for strength, endurance, and recovery.
@@ -34,20 +33,19 @@ export default function Footer() {
           {/* Contact */}
           <div className="text-right">
             <a
-              href="tel:7704506127"
+              href={`tel:${STUDIO.phoneTel}`}
               className="text-white/60 text-sm font-['Barlow'] hover:text-white transition-colors block mb-1"
               style={{ borderBottom: "1px solid rgba(0, 212, 255, 0.3)", paddingBottom: "2px" }}
             >
-              770-450-6127
+              {STUDIO.phone}
             </a>
             <a
-              href="https://maps.google.com/?q=1100+Johnson+Ferry+Road+Suite+270+Marietta+GA+30068"
+              href={`https://maps.google.com/?q=${encodeURIComponent(STUDIO.address)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/30 text-xs font-['Barlow'] hover:text-white/50 transition-colors leading-relaxed block"
             >
-              1100 Johnson Ferry Road, Suite 270<br />
-              Marietta, GA 30068
+              {STUDIO.address}
             </a>
           </div>
         </div>
@@ -56,7 +54,7 @@ export default function Footer() {
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-white/20 text-xs font-['Barlow']">
-            &copy; {new Date().getFullYear()} BODY20 East Cobb. All rights reserved.
+            &copy; {new Date().getFullYear()} {STUDIO.copyrightName}. All rights reserved.
           </p>
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <a

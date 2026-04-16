@@ -1,8 +1,8 @@
 /*
- * Header — BODY20 East Cobb QR Landing Page
- * Matches lead magnet site: dark navy bg, cyan "20" accent, white text
- * bg: oklch(0.15 0.02 250) with slight transparency
+ * Header — BODY20 QR Landing Page (multi-studio template)
+ * Studio-specific values come from studio.config.ts — do not hardcode here.
  */
+import { STUDIO } from "../studio.config";
 
 const BODY20_LOGO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663139156877/Q8rpXUDG6ufL2oWs24Lgdi/body20-logo_3057d141.png";
 
@@ -25,17 +25,17 @@ export default function Header() {
             className="text-white/70 text-lg font-['Barlow'] font-500 tracking-wide hidden sm:block"
             style={{ borderLeft: "1px solid rgba(0,212,255,0.3)", paddingLeft: "12px" }}
           >
-            East Cobb
+            {STUDIO.name}
           </span>
         </div>
 
         {/* Phone */}
         <a
-          href="tel:7704506127"
+          href={`tel:${STUDIO.phoneTel}`}
           className="text-white/60 text-sm font-['Barlow'] hover:text-white transition-colors hidden sm:block"
           style={{ borderBottom: "2px solid #00D4FF", paddingBottom: "2px" }}
         >
-          770-450-6127
+          {STUDIO.phone}
         </a>
       </div>
     </header>
