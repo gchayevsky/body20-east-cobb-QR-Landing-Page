@@ -1,0 +1,45 @@
+{
+  "query": "SELECT id, sessionKey, visitorName, visitorPhone, transcriptSent FROM chat_sessions ORDER BY createdAt DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3X1U5X8qKbyoYjm.5e45a810cc69 --database Q8rpXUDG6ufL2oWs24Lgdi --execute SELECT id, sessionKey, visitorName, visitorPhone, transcriptSent FROM chat_sessions ORDER BY createdAt DESC LIMIT 5;",
+  "rows": [
+    {
+      "id": "30006",
+      "sessionKey": "eShABRL-2iQ4dv-u",
+      "visitorName": "NULL",
+      "visitorPhone": "917 250 9231",
+      "transcriptSent": "1"
+    },
+    {
+      "id": "30005",
+      "sessionKey": "RhlBEPzooSO1Ny40",
+      "visitorName": "NULL",
+      "visitorPhone": "NULL",
+      "transcriptSent": "0"
+    },
+    {
+      "id": "30004",
+      "sessionKey": "jKUbA8hOlvq1XYlg",
+      "visitorName": "NULL",
+      "visitorPhone": "NULL",
+      "transcriptSent": "0"
+    },
+    {
+      "id": "30003",
+      "sessionKey": "wrNcWT1GT4s7XLbn",
+      "visitorName": "NULL",
+      "visitorPhone": "NULL",
+      "transcriptSent": "0"
+    },
+    {
+      "id": "30002",
+      "sessionKey": "Pym9kadVn7Sm8-Pi",
+      "visitorName": "NULL",
+      "visitorPhone": "917 2509231",
+      "transcriptSent": "1"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tsessionKey\tvisitorName\tvisitorPhone\ttranscriptSent\n30006\teShABRL-2iQ4dv-u\tNULL\t917 250 9231\t1\n30005\tRhlBEPzooSO1Ny40\tNULL\tNULL\t0\n30004\tjKUbA8hOlvq1XYlg\tNULL\tNULL\t0\n30003\twrNcWT1GT4s7XLbn\tNULL\tNULL\t0\n30002\tPym9kadVn7Sm8-Pi\tNULL\t917 2509231\t1\n",
+  "stderr": "",
+  "execution_time_ms": 64
+}

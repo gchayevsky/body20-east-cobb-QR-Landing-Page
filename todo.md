@@ -39,4 +39,10 @@
 - [x] Add SMS transcript request button and phone number input flow to JenChat component
 - [x] Add persistent Get Transcript button to JenChat header (always visible, toggles transcript form)
 - [x] Reduce gap between green orb widget and Chat with Jen button in OrbSection
-- [ ] Fix SMS transcript: generate PDF, upload to S3, send single SMS with link (replaces multi-SMS approach)
+- [x] Fix SMS transcript: generate PDF, upload to S3, send single SMS with link (replaces multi-SMS approach)
+
+## BotDisplay Chat Widget Integration
+- [x] Add BotDisplay chat-widget.js script to index.html
+- [x] Wire "Chat with Jen" button to open/focus the BotDisplay widget — clicks .chat-button via DOM
+- [x] Remove old JenChat full-screen component from page flow
+- [x] Fix data-prompts truncation: removed from HTML, prompt lives in Centerfy platform

@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, session_key, visitor_name, visitor_phone, transcript_sent, created_at FROM chat_sessions ORDER BY created_at DESC LIMIT 5;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway03.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 3X1U5X8qKbyoYjm.5e45a810cc69 --database Q8rpXUDG6ufL2oWs24Lgdi --execute SELECT id, session_key, visitor_name, visitor_phone, transcript_sent, created_at FROM chat_sessions ORDER BY created_at DESC LIMIT 5;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'session_key' in 'field list'"
+  ]
+}

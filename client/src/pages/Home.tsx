@@ -17,17 +17,49 @@ import BookingSection from "@/components/BookingSection";
 import LongevitySection from "@/components/LongevitySection";
 import StickyBookingBar from "@/components/StickyBookingBar";
 import CallModal from "@/components/CallModal";
-import JenChat from "@/components/JenChat";
 import LongevityModal from "@/components/LongevityModal";
 import CalendarModal from "@/components/CalendarModal";
 import Footer from "@/components/Footer";
 
+// BotDisplay widget API — injected by the chat-widget.js script in index.html
+declare global {
+  interface Window {
+    __botdisplay?: {
+      open: () => void;
+      close: () => void;
+      toggle: () => void;
+    };
+  }
+}
+
 export default function Home() {
   const [chatOpen, setChatOpen] = useState(false);
   const [callModalOpen, setCallModalOpen] = useState(false);
-  const [jenChatOpen, setJenChatOpen] = useState(false);
   const [longevityModalOpen, setLongevityModalOpen] = useState(false);
   const [calendarModalOpen, setCalendarModalOpen] = useState(false);
+
+  // Opens the BotDisplay chat widget when the "Chat with Jen" button is tapped.
+  // The BotDisplay widget (loaded by <script> in index.html) does not expose a global API.
+  // The only way to open it programmatically is to click its own floating button (.chat-button).
+  // If the widget hasn't rendered yet, we retry after 600ms.
+  const openJenChat = () => {
+    const triggerWidget = () => {
+      const widgetBtn = document.querySelector<HTMLButtonElement>('.chat-button');
+      if (widgetBtn) {
+        // Only click if the chat window isn't already open
+        const chatWindow = document.querySelector('.chat-window');
+        const isAlreadyOpen = chatWindow && chatWindow.classList.contains('open');
+        if (!isAlreadyOpen) widgetBtn.click();
+      }
+    };
+    const widgetBtn = document.querySelector('.chat-button');
+    if (widgetBtn) {
+      triggerWidget();
+    } else {
+      // Widget may still be loading — retry once after a short delay
+      setTimeout(triggerWidget, 600);
+    }
+  };
 
   const bookingRef = useRef<HTMLDivElement>(null);
 
@@ -54,13 +86,7 @@ export default function Home() {
         onOrbTap={() => setChatOpen(true)}
         onRequestCall={() => setCallModalOpen(true)}
         onBookAssessment={openBooking}
-        onChatWithJen={() => setJenChatOpen(true)}
-      />
-
-      {/* Jen AI Text Chat — full-screen chat panel with LLM responses and SMS transcript */}
-      <JenChat
-        open={jenChatOpen}
-        onClose={() => setJenChatOpen(false)}
+        onChatWithJen={openJenChat}
       />
 
       {/* Chat Panel — slides in when orb is tapped */}
