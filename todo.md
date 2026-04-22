@@ -46,3 +46,7 @@
 - [x] Wire "Chat with Jen" button to open/focus the BotDisplay widget — clicks .chat-button via DOM
 - [x] Remove old JenChat full-screen component from page flow
 - [x] Fix data-prompts truncation: removed from HTML, prompt lives in Centerfy platform
+
+## BotDisplay Widget Fixes
+- [x] Fix transfer_to_live_agent error: created new Jen Chat assistant (ID 1776832648133x123372887668686850), updated index.html to point to correct assistant
+- [x] Change widget accent color from green #10A37F to cyan #00D4FF to match site palette
